@@ -1,0 +1,71 @@
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+
+# Release output (signed builds, rule packs, release.json)
+/dist/
+
+# Generated eval reports — keep summaries
+/evals/reports/*
+!/evals/reports/**/summary*.md
+!/evals/reports/**/summary*.json
+
+# Model weights and caches (distributed via IPFS; hashes live in models/registry.toml)
+/models/**/*.safetensors
+/models/**/*.gguf
+/models/**/*.onnx
+/models/**/*.bin
+/models/cache/
+
+# Fuzzing
+/fuzz/target/
+/fuzz/corpus/
+/fuzz/artifacts/
+/crates/*/fuzz/target/
+/crates/*/fuzz/corpus/
+/crates/*/fuzz/artifacts/
+
+# insta pending snapshots
+*.snap.new
+*.pending-snap
+
+# Python training pipelines (uv)
+/training/.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Secrets and signing keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*_ed25519
+*.ed25519
+
+# Local tool state
+.claude/settings.local.json
+.kbd-orchestrator/worktrees/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# prometheus-context-bootstrap
+.prometheus/.writer.lock
+.prometheus/.review-pending
+.claude/settings.json.bak.*
+
+# Agent-team local coordination state (prompts, evidence, recovery copies)
+/.agent-team/state.json
+/.agent-team/recovery/
+
+# Personal conversation transcripts — never published (public repo)
+/docs/sessions/
+/.prometheus/recovery/

@@ -1,0 +1,26 @@
+# Source classification for the public documentation site.
+#   public                 - copied as-is
+#   public-normalize       - copied by scripts/sync-docs.mjs, with links and frontmatter rewritten
+#   private-synthesis-only - may inform hand-written pages in content/, never copied
+#   excluded               - never read by the site build
+# scripts/sync-docs.mjs reads ONLY the public and public-normalize entries.
+schema_version: 1
+sources:
+  - path: ../docs/PLAYBOOK.md
+    classification: public-normalize
+  - path: ../docs/research
+    classification: public-normalize
+  - path: ../docs/architecture
+    classification: public          # the report is already published on IPFS
+  - path: ../docs/README.md
+    classification: private-synthesis-only   # it indexes sessions/, so content/index.md replaces it
+  - path: ../docs/sessions
+    classification: excluded        # personal conversation transcripts
+  - path: ../PRODUCT.md
+    classification: private-synthesis-only
+  - path: ../.prometheus
+    classification: excluded
+  - path: ../.agent-team
+    classification: excluded
+  - path: ../.kbd-orchestrator
+    classification: excluded

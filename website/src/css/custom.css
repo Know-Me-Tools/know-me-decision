@@ -1,0 +1,307 @@
+/*
+ * KnowMe brand for the know-me-decision docs.
+ * Tokens: know-me-system/docs/knowme-ui-ux-standard.md §4.1 (authoritative).
+ * Flat 2.0 (§3): no borders, rules, gradients or decorative shadows; regions differ
+ * only by filled background. Keyboard focus stays visible.
+ */
+
+:root {
+  /* Surface ladder (light) */
+  --km-canvas: #f7f7f8;
+  --km-chrome: #ffffff;
+  --km-surface: #fafbfc;
+  --km-raised: #ffffff;
+  --km-hover: #f2f4f7;
+  --km-muted: #eef0f3;
+  --km-fg: #0b0f14;
+  --km-fg-sub: #4b5563;
+  --km-fg-faint: #6b7280;
+  /* Ember is the brand/action colour. A deeper shade keeps link text >= 4.5:1. */
+  --km-ember: #e04e28;
+  --km-ember-text: #c13e1e;
+  --km-ember-soft: #fbe8e1;
+  --km-on-ember: #ffffff;
+  --km-cyan: #0891b2;
+  --km-cyan-soft: #ddf1f5;
+  --km-success: #16a34a;
+  --km-warning: #d97706;
+  --km-error: #dc2626;
+
+  --km-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --km-font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --km-font-prose: 'Roboto', 'Inter', system-ui, sans-serif;
+  --km-font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --km-radius: 12px;
+  --km-radius-sm: 8px;
+
+  /* Infima mapping */
+  --ifm-color-primary: var(--km-ember-text);
+  --ifm-color-primary-dark: #ad381b;
+  --ifm-color-primary-darker: #a33519;
+  --ifm-color-primary-darkest: #862c15;
+  --ifm-color-primary-light: #d54421;
+  --ifm-color-primary-lighter: #e04e28;
+  --ifm-color-primary-lightest: #e86a49;
+  --ifm-background-color: var(--km-canvas);
+  --ifm-background-surface-color: var(--km-chrome);
+  --ifm-navbar-background-color: var(--km-chrome);
+  --ifm-footer-background-color: var(--km-surface);
+  --ifm-card-background-color: var(--km-raised);
+  --ifm-font-color-base: var(--km-fg);
+  --ifm-font-color-secondary: var(--km-fg-sub);
+  --ifm-heading-color: var(--km-fg);
+  --ifm-link-color: var(--km-ember-text);
+  --ifm-menu-color: var(--km-fg-sub);
+  --ifm-menu-color-background-active: var(--km-ember-soft);
+  --ifm-menu-color-background-hover: var(--km-hover);
+  --ifm-toc-border-color: transparent;
+  --ifm-hr-border-color: transparent;
+  --ifm-table-border-color: transparent;
+  --ifm-table-stripe-background: var(--km-hover);
+  --ifm-table-head-background: var(--km-muted);
+  --ifm-code-background: var(--km-muted);
+  --ifm-code-font-size: 92%;
+  --ifm-font-family-base: var(--km-font-ui);
+  --ifm-heading-font-family: var(--km-font-display);
+  --ifm-font-family-monospace: var(--km-font-mono);
+  --ifm-font-size-base: 16px;
+  --ifm-line-height-base: 1.65;
+  --ifm-global-radius: var(--km-radius-sm);
+  --ifm-code-border-radius: var(--km-radius-sm);
+  --ifm-card-border-radius: var(--km-radius);
+  --ifm-global-shadow-lw: none;
+  --ifm-global-shadow-md: none;
+  --ifm-global-shadow-tl: none;
+  --ifm-navbar-shadow: none;
+  --docusaurus-highlighted-code-line-bg: var(--km-hover);
+}
+
+[data-theme='dark'] {
+  --km-canvas: #0b0f14;
+  --km-chrome: #111620;
+  --km-surface: #161d29;
+  --km-raised: #1c2535;
+  --km-hover: #202b40;
+  --km-muted: #253044;
+  --km-fg: #e8edf3;
+  --km-fg-sub: #a7b0bc;
+  --km-fg-faint: #8a93a3;
+  --km-ember: #ff6a3d;
+  --km-ember-text: #ff6a3d;
+  --km-ember-soft: #2b1a18;
+  --km-on-ember: #0b0f14;
+  --km-cyan: #00c2dc;
+  --km-cyan-soft: #0f2a31;
+  --km-success: #22c55e;
+  --km-warning: #f59e0b;
+  --km-error: #ef4444;
+
+  --ifm-color-primary: var(--km-ember);
+  --ifm-color-primary-dark: #ff5520;
+  --ifm-color-primary-darker: #ff4a12;
+  --ifm-color-primary-darkest: #e93400;
+  --ifm-color-primary-light: #ff7f5a;
+  --ifm-color-primary-lighter: #ff8a68;
+  --ifm-color-primary-lightest: #ffab92;
+}
+
+/* ---- Flat 2.0: remove every border, rule and decorative shadow ---- */
+*,
+*::before,
+*::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  border-color: transparent !important;
+}
+.navbar,
+.navbar-sidebar,
+.footer,
+.menu,
+.theme-doc-sidebar-container,
+.table-of-contents,
+.card,
+.alert,
+.admonition,
+pre,
+code,
+table,
+th,
+td,
+tr,
+.pagination-nav__link,
+.DocSearch-Button,
+.navbar__search-input,
+details {
+  border: 0 !important;
+}
+hr {
+  border: 0;
+  height: 0;
+  margin: 2.5rem 0;
+}
+
+body {
+  background: var(--km-canvas);
+  font-family: var(--km-font-ui);
+}
+.markdown {
+  font-family: var(--km-font-prose);
+  font-size: 16px;
+}
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.hero__title {
+  font-family: var(--km-font-display);
+  letter-spacing: -0.015em;
+}
+
+/* Surface ladder: canvas → chrome → surface → raised */
+.navbar {
+  background: var(--km-chrome);
+}
+.theme-doc-sidebar-container,
+.navbar-sidebar {
+  background: var(--km-chrome);
+}
+.footer {
+  background: var(--km-surface);
+  color: var(--km-fg-sub);
+}
+.footer__title {
+  color: var(--km-fg);
+  font-family: var(--km-font-display);
+}
+.footer__link-item {
+  color: var(--km-fg-sub);
+}
+.footer__link-item:hover {
+  color: var(--km-ember-text);
+}
+.card,
+.pagination-nav__link {
+  background: var(--km-surface);
+  border-radius: var(--km-radius);
+}
+.pagination-nav__link:hover {
+  background: var(--km-hover);
+}
+pre,
+.prism-code {
+  border-radius: var(--km-radius-sm);
+}
+.markdown code {
+  background: var(--km-muted);
+}
+
+/* Tables: row fills, no grid lines */
+.markdown table {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--km-radius-sm);
+  overflow: hidden;
+}
+.markdown table thead tr {
+  background: var(--km-muted);
+}
+.markdown table tbody tr {
+  background: var(--km-surface);
+}
+.markdown table tbody tr:nth-child(2n) {
+  background: var(--km-hover);
+}
+.markdown th,
+.markdown td {
+  padding: 0.6rem 0.85rem;
+}
+
+/* Admonitions: tinted fills instead of left rules */
+.alert,
+.admonition {
+  border-radius: var(--km-radius-sm);
+}
+.alert--info,
+.alert--secondary {
+  background: var(--km-cyan-soft);
+  color: var(--km-fg);
+}
+.alert--warning,
+.alert--danger {
+  background: var(--km-ember-soft);
+  color: var(--km-fg);
+}
+
+/* Navigation: selection = accent-tinted fill + stronger text */
+.menu__link {
+  border-radius: var(--km-radius-sm);
+}
+.menu__link--active:not(.menu__link--sublist) {
+  background: var(--km-ember-soft);
+  color: var(--km-fg);
+  font-weight: 600;
+}
+.navbar__link--active {
+  color: var(--km-ember-text);
+}
+.table-of-contents__link--active {
+  color: var(--km-ember-text);
+  font-weight: 600;
+}
+
+/* Search input: filled field, no chrome */
+.navbar__search-input {
+  background: var(--km-muted);
+  color: var(--km-fg);
+}
+
+/* Buttons */
+.button--primary {
+  background: var(--km-ember-text);
+  color: var(--km-on-ember);
+  border: 0;
+}
+[data-theme='dark'] .button--primary {
+  background: var(--km-ember);
+}
+.button--primary:hover {
+  background: var(--ifm-color-primary-dark);
+  color: var(--km-on-ember);
+}
+.button--secondary {
+  background: var(--km-muted);
+  color: var(--km-fg);
+  border: 0;
+}
+.button--secondary:hover {
+  background: var(--km-hover);
+  color: var(--km-fg);
+}
+
+/* Keyboard focus: high-contrast fill plus a visible ring (never removed). */
+:focus-visible {
+  outline: 3px solid var(--km-ember) !important;
+  outline-offset: 2px;
+}
+.menu__link:focus-visible,
+.navbar__link:focus-visible {
+  background: var(--km-hover);
+}
+
+/* Mermaid diagrams sit on a surface fill */
+.docusaurus-mermaid-container {
+  background: var(--km-surface);
+  border-radius: var(--km-radius);
+  padding: 1rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

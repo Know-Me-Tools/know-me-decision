@@ -1,0 +1,50 @@
+{
+  "name": "know-me-decision",
+  "description": "Self-hosted decision models for KnowMe, as a Rust crate family and MCP sidecar (knowme-decide).",
+  "activePhase": null,
+  "updatedAt": "2026-09-28T00:00:00Z",
+  "worktreeRoot": "${HOME}/.claude/worktrees",
+  "maxChildDepth": 4,
+  "ux_profile": "advanced",
+  "focus_project_path": "/Users/gqadonis/Projects/know-me/know-me-decision",
+  "stack": {
+    "language": "rust",
+    "toolchain": "1.97.1",
+    "edition": "2024",
+    "secondary": ["python (uv) for training/"],
+    "status": "pre-implementation: Cargo workspace is created at playbook milestone M0"
+  },
+  "spec_paths": ["openspec/specs/*.md", "docs/PLAYBOOK.md", "docs/adr/*.md"],
+  "openspec_available": true,
+  "constraint_file": ".kbd-orchestrator/constraints.md",
+  "build_health_command": "cargo check --workspace --all-targets",
+  "test_command": "cargo test --workspace",
+  "lint_command": "cargo fmt --all -- --check && cargo clippy --workspace --all-targets -- -D warnings && cargo deny check",
+  "dev_command": null,
+  "extra_checks": {
+    "core_wasm": "cargo build -p decide-core --target wasm32-unknown-unknown",
+    "spec_lint": "cargo xtask spec-lint",
+    "conformance": "cargo xtask conformance"
+  },
+  "preferred_planning_agent": "claude-code",
+  "preferred_execution_agents": ["claude-code", "codex", "opencode", "kimi-code", "minimax-code"],
+  "agents_config": {
+    "claude-code": { "entry": "Claude Code CLI; /opsx:* commands, .claude/skills", "strengths": ["planning", "multi-file features", "review"] },
+    "codex": { "entry": "OpenAI Codex CLI; $openspec-* skills in .agents/skills", "strengths": ["parallel isolated tasks via git worktrees"] },
+    "opencode": { "entry": "OpenCode CLI; /opsx-* commands", "strengths": ["quick targeted edits", "file patches"] },
+    "kimi-code": { "entry": "Kimi Code; /skill:openspec-* in .kimi-code/skills", "strengths": ["focused implementation"] },
+    "minimax-code": { "entry": "MiniMax Code; global ~/.minimax/skills", "strengths": ["focused implementation"] },
+    "zed": { "entry": "Zed agent; shares .agents/skills", "strengths": ["editor-integrated edits"] }
+  },
+  "workspace": {
+    "workspace_file": null,
+    "folders": [
+      {
+        "path": "/Users/gqadonis/Projects/know-me/know-me-decision",
+        "role": "focus",
+        "purpose": "Active project — all KBD operations target this directory",
+        "write_access": true
+      }
+    ]
+  }
+}

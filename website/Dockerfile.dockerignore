@@ -1,0 +1,11 @@
+# Used by `docker build -f website/Dockerfile .` (context = repository root).
+**
+!docs/**
+docs/sessions
+docs/sessions/**
+!website/**
+website/node_modules
+website/build
+website/.docusaurus
+website/docs
+website/static/architecture

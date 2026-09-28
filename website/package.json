@@ -1,0 +1,54 @@
+{
+  "name": "know-me-decision-docs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "node scripts/sync-docs.mjs && docusaurus start",
+    "build": "node scripts/sync-docs.mjs && node scripts/build.mjs",
+    "swizzle": "docusaurus swizzle",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "sanitize": "node scripts/sync-docs.mjs && node scripts/sanitize.mjs",
+    "sync": "node scripts/sync-docs.mjs"
+  },
+  "dependencies": {
+    "@docusaurus/core": "3.10.1",
+    "@docusaurus/faster": "3.10.1",
+    "@docusaurus/preset-classic": "3.10.1",
+    "@docusaurus/theme-mermaid": "3.10.1",
+    "@easyops-cn/docusaurus-search-local": "0.55.2",
+    "@mdx-js/react": "3.1.1",
+    "clsx": "2.1.1",
+    "mermaid": "11.16.0",
+    "prism-react-renderer": "2.4.1",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@docusaurus/module-type-aliases": "3.10.1",
+    "@docusaurus/types": "3.10.1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 3 chrome version",
+      "last 3 firefox version",
+      "last 5 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=22.0"
+  },
+  "overrides": {
+    "serialize-javascript": "7.0.5",
+    "@docusaurus/plugin-content-docs": "3.10.1",
+    "@docusaurus/theme-common": "3.10.1"
+  }
+}
