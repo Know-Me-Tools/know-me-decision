@@ -1,7 +1,5 @@
 import {themes as prismThemes} from 'prism-react-renderer';
-import {createRequire} from 'node:module';
 
-const require = createRequire(import.meta.url);
 
 const REPO = 'https://github.com/Know-Me-Tools/know-me-decision';
 
@@ -43,7 +41,7 @@ const config = {
   ],
   plugins: [
     [
-      require.resolve('@easyops-cn/docusaurus-search-local'),
+      '@easyops-cn/docusaurus-search-local',
       {hashed: true, indexDocs: true, indexBlog: false, indexPages: false, docsRouteBasePath: 'docs', highlightSearchTermsOnTargetPage: true},
     ],
   ],

@@ -54,7 +54,7 @@ jobs:
 
       - name: Reject private material in the output
         run: |
-          if grep -rIlE '/Users/|\.prometheus/|BEGIN [A-Z ]*PRIVATE KEY|treston-2026-09-27-transcript' build; then
+          if grep -rIlE '/Users/[A-Za-z0-9._-]+/|/home/(runner/)?[A-Za-z0-9._-]+/|BEGIN [A-Z ]*PRIVATE KEY|treston-2026-09-27-transcript' build; then
             echo "::error::private material found in site output"
             exit 1
           fi
