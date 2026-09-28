@@ -68,4 +68,3 @@ __pycache__/
 
 # Personal conversation transcripts — never published (public repo)
 /docs/sessions/
-/.prometheus/recovery/
