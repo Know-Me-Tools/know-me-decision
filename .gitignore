@@ -68,3 +68,58 @@ __pycache__/
 
 # Personal conversation transcripts — never published (public repo)
 /docs/sessions/
+
+# >>> knowme-project-setup >>>
+# Managed by knowme-project-setup. Edit outside this block.
+# Tracked on purpose: .kbd-orchestrator/ (KBD state) and .prometheus/ (knowledge logs).
+
+# KBD / Prometheus runtime-only files
+.kbd-orchestrator/worktrees/
+.prometheus/.writer.lock
+.prometheus/.review-pending
+.claude/settings.json.bak.*
+.claude/settings.local.json
+
+# Agent-team local coordination state (prompts, evidence, recovery copies)
+/.agent-team/state.json
+/.agent-team/recovery/
+
+# Docs site generated content
+/website/build/
+/website/.docusaurus/
+
+# Secrets and keys
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*_ed25519
+*.ed25519
+
+# OS / editors
+.DS_Store
+.idea/
+*.swp
+
+# rust
+/target/
+**/*.rs.bk
+*.pdb
+/fuzz/target/
+/fuzz/corpus/
+/fuzz/artifacts/
+*.snap.new
+*.pending-snap
+
+# python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Private content: never committed
+/docs/sessions/
+# <<< knowme-project-setup <<<
