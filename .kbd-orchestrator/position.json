@@ -2,25 +2,25 @@
   "schemaVersion": "1",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 94,
-  "derivedRevision": 94,
+  "sourceRevision": 105,
+  "derivedRevision": 105,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 94
+    "06580634-886f-4c83-8992-e14ba116c89a": 105
   },
   "conflictCount": 0,
-  "updatedAt": "2026-09-30T06:26:45.313990Z",
+  "updatedAt": "2026-09-30T06:27:29.869486Z",
   "cursor": [
     "m0-bootstrap",
     "execute",
-    "m0-reconcile-pending-design",
-    "m0-reconcile-pending-design-t1"
+    "m0-adrs-001-003",
+    "m0-adrs-001-003-t1"
   ],
   "root": {
     "type": "phase",
     "id": "b2e307a2-c44b-41b3-b951-f2082da8b121",
     "status": "ready",
     "progress": {
-      "done": 0,
+      "done": 1,
       "total": 9
     },
     "children": [
@@ -30,16 +30,16 @@
         "canonicalId": "m0-bootstrap",
         "status": "PENDING",
         "progress": {
-          "done": 0,
+          "done": 1,
           "total": 9
         },
         "children": [
           {
             "type": "change",
             "id": "m0-reconcile-pending-design",
-            "status": "PENDING",
+            "status": "COMPLETE",
             "progress": {
-              "done": 5,
+              "done": 10,
               "total": 10
             }
           },

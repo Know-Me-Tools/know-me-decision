@@ -2,10 +2,10 @@
   "schemaVersion": "5",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 94,
-  "derivedRevision": 94,
+  "sourceRevision": 105,
+  "derivedRevision": 105,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 94
+    "06580634-886f-4c83-8992-e14ba116c89a": 105
   },
   "conflictCount": 0,
   "projectId": "b2e307a2-c44b-41b3-b951-f2082da8b121",
@@ -21,19 +21,19 @@
   "phase": "m0-bootstrap",
   "parentPhase": null,
   "childPointer": null,
-  "change": "m0-reconcile-pending-design",
-  "currentTask": "m0-reconcile-pending-design-t1",
+  "change": "m0-adrs-001-003",
+  "currentTask": "m0-adrs-001-003-t1",
   "status": "ready",
   "lifecycle": "ready",
   "stageId": "execute",
   "stageStatus": "IN_PROGRESS",
   "completionMetric": "implementation",
-  "implementationCompleted": 0,
+  "implementationCompleted": 1,
   "implementationTotal": 9,
   "planRevision": 1,
-  "revision": 94,
+  "revision": 105,
   "exactNextCommand": "/kbd-assess m0-bootstrap",
-  "nextChange": "m0-reconcile-pending-design",
-  "nextTask": "m0-reconcile-pending-design-t1",
-  "updatedAt": "2026-09-30T06:26:45.313990Z"
+  "nextChange": "m0-adrs-001-003",
+  "nextTask": "m0-adrs-001-003-t1",
+  "updatedAt": "2026-09-30T06:27:29.869486Z"
 }

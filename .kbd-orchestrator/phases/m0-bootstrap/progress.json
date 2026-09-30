@@ -2,27 +2,27 @@
   "schemaVersion": "2",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 94,
-  "derivedRevision": 94,
+  "sourceRevision": 105,
+  "derivedRevision": 105,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 94
+    "06580634-886f-4c83-8992-e14ba116c89a": 105
   },
   "conflictCount": 0,
   "phase": "m0-bootstrap",
   "phaseId": "m0-bootstrap",
   "parentPhase": null,
-  "last_updated": "2026-09-30T06:26:45.313990Z",
+  "last_updated": "2026-09-30T06:27:29.869486Z",
   "last_updated_by": "kbd-runtime",
   "changes_total": 9,
-  "changes_completed": 0,
+  "changes_completed": 1,
   "implementation_total": 9,
-  "implementation_completed": 0,
+  "implementation_completed": 1,
   "completion": {
     "primaryCounter": "implementation",
     "implementation": {
-      "completed": 0,
+      "completed": 1,
       "total": 9,
-      "status": "PENDING"
+      "status": "IN_PROGRESS"
     },
     "evidence": {
       "status": "NOT_TRACKED",
@@ -49,9 +49,9 @@
     "runId": "m0-bootstrap-20260930T053011Z",
     "primaryCounter": "implementation",
     "implementation": {
-      "completed": 0,
+      "completed": 1,
       "total": 9,
-      "status": "PENDING"
+      "status": "IN_PROGRESS"
     },
     "evidence": {
       "status": "PENDING",
@@ -73,12 +73,12 @@
     {
       "id": "m0-reconcile-pending-design",
       "title": "Review, reconcile and commit the uncommitted 2026-09-28 design work before anything builds on it.",
-      "status": "PENDING",
-      "implementation_status": "PENDING",
+      "status": "DONE",
+      "implementation_status": "COMPLETE",
       "tasks_total": 10,
-      "tasks_done": 5,
-      "last_task_completed": "1.5 Run verify.mjs (full and --privacy), then commit docs and KBD phase state",
-      "next_task_pending": "Add .opencode/opencode-loop/ and .playwright-mcp/ as private paths via the knowme-project-setup gitignore script",
+      "tasks_done": 10,
+      "last_task_completed": "Run verify.mjs (full and --privacy), then commit docs and KBD phase state",
+      "next_task_pending": null,
       "blockers": []
     },
     {
