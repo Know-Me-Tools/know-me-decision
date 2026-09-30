@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KnowMe Decision Layer</title>
-<meta name="description" content="Self-hosted decision models in place of TypeSafe's Jev: a Rust crate family and MCP sidecar for The Boss, UAR and KnowMe, with CounselMe and prior-auth use cases and a decision-skills marketplace.">
+<meta name="description" content="Planned built-in Julia 1 decisions through Rust and embedded ONNX Runtime, ready offline on desktop and mobile. Optional TypeSafe-key-backed Jev, with trusted routing, calibration and audit gates.">
 <meta name="author" content="Travis James · KnowMe, LLC">
 <meta name="keywords" content="decision models, Jev, Kev, LitJev, Qwen3.8, conformal prediction, MCP, rmcp, Rust, candle, UAR, KnowMe, The Boss, CounselMe, prior authorization, AgentSkills">
 <meta name="application-name" content="KnowMe">
@@ -16,21 +16,22 @@
 <meta property="og:site_name" content="KnowMe">
 <meta property="og:locale" content="en_US">
 <meta property="og:title" content="KnowMe Decision Layer">
-<meta property="og:description" content="Self-hosted decision models in place of TypeSafe's Jev: a Rust crate family and MCP sidecar for The Boss, UAR and KnowMe, with CounselMe and prior-auth use cases and a decision-skills marketplace.">
-<meta property="og:image" content="https://ipfs.prometheusags.ai/ipfs/bafkreifb4zsklm3rbumx5uvz3iqx4kjorrfbwv26nunmhrz4azqwvibjea">
-<meta property="og:image:secure_url" content="https://ipfs.prometheusags.ai/ipfs/bafkreifb4zsklm3rbumx5uvz3iqx4kjorrfbwv26nunmhrz4azqwvibjea">
+<meta property="og:description" content="Planned built-in Julia 1 decisions through Rust and embedded ONNX Runtime, ready offline on desktop and mobile. Optional TypeSafe-key-backed Jev, with trusted routing, calibration and audit gates.">
+<meta property="og:image" content="https://ipfs.prometheusags.ai/ipfs/bafkreibr6oxh2xo57mifllbcieugdwgldiez2hhk6en56mb5zgwfkcfotu">
+<meta property="og:image:secure_url" content="https://ipfs.prometheusags.ai/ipfs/bafkreibr6oxh2xo57mifllbcieugdwgldiez2hhk6en56mb5zgwfkcfotu">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="KnowMe Decision Layer report: hero section with the section navigation and the four headline findings.">
+<meta property="og:image:alt" content="Screenshot of the KnowMe Decision Layer architecture report, showing its title, navigation and decision-proxy overview.">
 <meta property="article:published_time" content="2026-09-27T19:00:00-05:00">
 <meta property="article:author" content="Travis James">
 <meta property="article:section" content="Architecture research">
+<meta property="article:modified_time" content="2026-09-28T06:25:16-05:00">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="KnowMe Decision Layer">
-<meta name="twitter:description" content="Self-hosted decision models in place of TypeSafe's Jev: a Rust crate family and MCP sidecar for The Boss, UAR and KnowMe, with CounselMe and prior-auth use cases and a decision-skills marketplace.">
-<meta name="twitter:image" content="https://ipfs.prometheusags.ai/ipfs/bafkreifb4zsklm3rbumx5uvz3iqx4kjorrfbwv26nunmhrz4azqwvibjea">
-<meta name="twitter:image:alt" content="KnowMe Decision Layer report: hero section with the section navigation and the four headline findings.">
+<meta name="twitter:description" content="Planned built-in Julia 1 decisions through Rust and embedded ONNX Runtime, ready offline on desktop and mobile. Optional TypeSafe-key-backed Jev, with trusted routing, calibration and audit gates.">
+<meta name="twitter:image" content="https://ipfs.prometheusags.ai/ipfs/bafkreibr6oxh2xo57mifllbcieugdwgldiez2hhk6en56mb5zgwfkcfotu">
+<meta name="twitter:image:alt" content="Screenshot of the KnowMe Decision Layer architecture report, showing its title, navigation and decision-proxy overview.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Roboto:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap">
@@ -265,6 +266,7 @@ footer svg{width:18px;height:18px}
     <li><a href="#technique">Technique layer</a></li>
     <li class="grp">Build</li>
     <li><a href="#architecture">Crate &amp; sidecar architecture<span class="new">NEW</span></a></li>
+    <li><a href="#proxy">Decision proxy<span class="new">28 SEP</span></a></li>
     <li><a href="#cascade">The decision cascade<span class="new">NEW</span></a></li>
     <li><a href="#tools">MCP tool surface<span class="new">NEW</span></a></li>
     <li><a href="#integration">Product integration<span class="new">NEW</span></a></li>
@@ -283,14 +285,15 @@ footer svg{width:18px;height:18px}
 
 <main id="top">
 <header class="hero">
-  <p class="eyebrow">KnowMe · Architecture research · 27 Sep 2026</p>
+  <p class="eyebrow">KnowMe · Architecture research · 27 Sep 2026 · updated 28 Sep</p>
   <h1>KnowMe Decision Layer</h1>
-  <p class="lede">Self-hosted decision models in place of TypeSafe's Jev, packaged as one Rust crate family. The Boss ships it as a standard MCP sidecar, UAR and KnowMe link it natively, and CounselMe and the Prior Authorization Workbench get their decisions from it.</p>
-  <div class="meta"><span>Mentor session source: Treston · 2026-09-27</span><span>Repos read: universal-agent-runtime · know-me-system · the-boss · prior-auth</span><span>Status: proposal</span></div>
+  <p class="lede">Julia 1 is the planned built-in default: Rust APIs, embedded native ONNX Runtime and all model assets installed before first launch. Desktop and mobile run supported decisions offline without a key, configuration file or model server. Optional hosted Jev uses a TypeSafe key plus trusted host permission; adding a key leaves the local default unchanged. One decision proxy provides native, Jev-compatible and MCP interfaces. Larger models and browser execution remain optional extensions.</p>
+  <div class="meta"><span>Mentor session source: Treston · 2026-09-27</span><span>Repos read: universal-agent-runtime · know-me-system · the-boss · prior-auth</span><span>Status: proposal · implementation and conformance pending</span><span>rmcp =3.5.0 · MCP 2026-07-28</span></div>
   <div class="verdict" id="summary">
     <div class="key"><b>Build it as one crate family</b><span><code>knowme-decide</code> is a pure-Rust core with pluggable backends. The same types run in-process inside UAR, KnowMe and the prior-auth host, and behind an rmcp server that The Boss bundles as a sidecar.</span></div>
-    <div><b>No single open model replaces Jev</b><span>Stack them instead: tripwires, an encoder router (Laya or ModernBERT), a Jev-style head (Kev, or your LitJev port on Qwen3.8-27B), guard models (Qwen3Guard, Granite Guardian), and conformal calibration fitted on your own labels.</span></div>
-    <div><b>Calibration is the product</b><span>The open models give you the interface for free. Recall guarantees on escalation, crisis and met/gap/void classes come from your counselor and coordinator overrides, which the audit log turns into labels.</span></div>
+    <div><b>One proxy in front of every model</b><span>The Jev-compatible <code>/v1/systemone</code>, a native <code>/v1/decide</code>, SSE streaming and MCP at <code>/mcp</code>. Trusted host policy excludes hosted destinations for PHI and unknown data. The router ranks eligible deployments; required guards, calibration and host audit persistence govern the outcome.</span></div>
+    <div><b>One bundled default; optional extensions</b><span>Julia 1 handles supported Choice, Score and Noul requests locally. Laya, Qwen/Kev and specialist guards are optional additions. Required guards and valid calibration remain prerequisites for Act. CLM integration and its Rust port are deferred.</span></div>
+    <div><b>Calibration is the product</b><span>The open models give you the interface for free. Coverage claims require representative human labels across Act, Review and Escalate, with explicit statistical assumptions. Overrides alone miss confidently wrong automated decisions.</span></div>
     <div><b>Propose, never act, on clinical state</b><span>CounselMe escalates and never treats. Prior-auth proposes met/gap/void and never writes or denies. Both rules already match how each codebase is built.</span></div>
   </div>
 </header>
@@ -321,7 +324,7 @@ footer svg{width:18px;height:18px}
       <tr><td><b>Kev</b></td><td>Qwen3.5/3.8 at 0.8B, 4B, 9B, 27B; LoRA plus pointer head on a frozen backbone</td><td>Apache-2.0, with training code and evals</td><td>Kev-4B about 495 ms for 3 questions on an M5; Kev-27B needs ~55 GB (an 80 GB GPU)</td><td>Kev-27B out-of-distribution: accuracy 0.896, Brier 0.160, coverage at ≤5% error 0.835. Kev-9B ECE 0.106→0.042 after temperature fitting</td><td>Python server; TypeSafe <code>/v1/systemone</code> wire format</td></tr>
       <tr><td><b>Laya</b></td><td>ModernBERT-large 421M (EN), mmBERT-base 322M (multilingual)</td><td>Apache-2.0</td><td>33–40 ms on a T4; 193–464 ms on CPU</td><td>ECE 0.466 as shipped → 0.081 after temperature fitting</td><td><b>Pure-Rust candle port</b> (<code>laya-rust</code>): CPU, Metal and CUDA, with a ModernBERT f16 mask fix</td></tr>
       <tr><td><b>Julia 1</b></td><td>mmBERT-small, 144.3M</td><td>Apache-2.0</td><td>33 ms median on an Apple M4; 203 ms on a tablet CPU (ONNX)</td><td>Accuracy only. 73.15% vs Jev's 72.70% on Typed Decisions, but <b>64% vs 87% on Banking77</b> (72 labels)</td><td>ONNX Runtime, WebGPU</td></tr>
-      <tr><td><b>CLM-8B</b></td><td>Frozen Qwen3-8B plus two 20M heads</td><td>Apache-2.0</td><td>28 ms per new state on an RTX 4090</td><td>None claimed</td><td>vLLM pooling; scores candidate actions</td></tr>
+      <tr><td><b>CLM-8B</b></td><td>Frozen Qwen3-8B plus two 20M heads</td><td>Apache-2.0</td><td>28 ms per new state on an RTX 4090</td><td>None claimed</td><td>Research only; integration and Rust port deferred</td></tr>
       <tr><td><b>litjev · AnyJev · jevfire · jevmlx</b></td><td>Logit readers over any frozen LLM</td><td>MIT / Apache</td><td>Your hardware</td><td>AnyJev fits a head on 100–300 labels; jevfire warns its label probabilities are not correctness probabilities</td><td>vLLM, MLX; the pattern your LitJev port copies</td></tr>
     </tbody></table></div>
   <div class="prose"><p><b>What this tells you:</b> the small open models match Jev when there are a handful of well-described options. They fall behind when there are many similar labels, long inputs, or policy and date reasoning. Kev-27B uses exactly <code>Qwen/Qwen3.8-27B</code>, the base you chose for the LitJev port, and is the best-calibrated open option the research found. That makes it the reference your port should match.</p></div>
@@ -330,7 +333,7 @@ footer svg{width:18px;height:18px}
   <div class="tbl"><table>
     <thead><tr><th>Model</th><th>Size</th><th>License</th><th>Output</th><th>Role here</th></tr></thead>
     <tbody>
-      <tr><td><b>Qwen3Guard-Gen / -Stream</b></td><td>0.6B, 4B, 8B</td><td>Apache-2.0</td><td>Safe / Unsafe / Controversial plus a category (incl. Suicide &amp; Self-Harm, PII, Jailbreak). The Stream variant labels each token as it is generated</td><td>Real-time monitoring of the twin's output. A second, uncorrelated crisis signal</td></tr>
+      <tr><td><b>Qwen3Guard-Gen / -Stream</b></td><td>0.6B, 4B, 8B</td><td>Apache-2.0</td><td>Safe / Unsafe / Controversial plus a category (incl. Suicide &amp; Self-Harm, PII, Jailbreak). The Stream variant labels each token as it is generated</td><td>Real-time monitoring of the twin's output. An additional crisis signal; error independence must be measured</td></tr>
       <tr><td><b>Granite Guardian 4.1 8B</b></td><td>8B</td><td>Apache-2.0</td><td>Yes/no score from logprobs, with criteria you supply</td><td>Answer sufficiency, groundedness and citation support. English only</td></tr>
       <tr><td><b>gpt-oss-safeguard-20b</b></td><td>20B (≥12 GB)</td><td>Apache-2.0</td><td>Reasoning plus a label against a policy you write</td><td>Async audit of sent answers against a written escalation policy. Too slow to run inline</td></tr>
     </tbody></table></div>
@@ -353,8 +356,8 @@ footer svg{width:18px;height:18px}
   <div class="grid2">
     <div class="card"><h4>One-pass option scoring</h4><p>Prefill the state once, then read the next-token logits restricted to the option tokens. For several questions over one state, fork the cache for each question. On Qwen3.8's hybrid Gated DeltaNet layers, paged-attention KV reuse doesn't cover the linear-attention state, so the candle-vllm fork needs a <b>state snapshot and fork</b> primitive.</p></div>
     <div class="card"><h4>Constrained decoding</h4><p>Use it for the fields you actually generate: action items, missing-evidence lists, criteria decomposition. <b>llguidance</b> is a Rust crate that computes token masks at about 40–50 µs per token, so it fits directly in the candle-vllm fork. It guarantees the output structure, but says nothing about calibration.</p></div>
-    <div class="card"><h4>Calibration</h4><p>Temperature scaling fixes average overconfidence (Laya's ECE went from 0.466 to 0.081). For escalation, crisis and void classes, use <b>class-conditional (Mondrian) split conformal</b> so recall is guaranteed at a floor you set. Recalibrate for each counselor, clinic and population.</p></div>
-    <div class="card"><h4>Fine-tune on your decisions</h4><p>Options range from SetFit (dozens of labels, CPU) to a full ModernBERT fine-tune to LoRA plus a head on Qwen (Kev's recipe; soft targets beat hard labels). The counselor's transaction log and the coordinator's confirmations are the labeling pipeline, so capture overrides from day one.</p></div>
+    <div class="card"><h4>Calibration</h4><p>Temperature scaling fixes average overconfidence (Laya's ECE went from 0.466 to 0.081). For escalation, crisis and void classes, use <b>class-conditional (Mondrian) split conformal</b> to target class-conditional coverage under documented sampling assumptions. Minimum sample counts do not prove deployment recall or automated-action safety. Evaluate the routed system and each population; pooled fallback cannot claim subgroup coverage.</p></div>
+    <div class="card"><h4>Fine-tune on your decisions</h4><p>Options range from SetFit (dozens of labels, CPU) to a full ModernBERT fine-tune to LoRA plus a head on Qwen (Kev's recipe; soft targets beat hard labels). Capture overrides and representative human-reviewed samples from all outcomes. Separate training, calibration and test sets; synthetic cases never count toward calibration-positive minimums.</p></div>
   </div>
 </section>
 <section class="block" id="architecture">
@@ -378,16 +381,16 @@ footer svg{width:18px;height:18px}
       <text x="776" y="44" class="t">Prior-Auth Workbench</text><text x="776" y="66" class="s">aso-host port · rmcp 3.4</text><text x="776" y="86" class="s">aso-decide kernel</text>
       <!-- sidecar -->
       <rect x="10" y="172" width="220" height="96" rx="12" class="accent"/>
-      <text x="26" y="200" class="t" style="fill:var(--ember)">knowme-decide</text><text x="26" y="222" class="s">sidecar binary</text><text x="26" y="242" class="s">stdio · streamable HTTP</text><text x="26" y="258" class="s">READY:{port}</text>
+      <text x="26" y="200" class="t" style="fill:var(--ember)">knowme-decide</text><text x="26" y="222" class="s">proxy · Axum</text><text x="26" y="242" class="s">stdio · streamable HTTP</text><text x="26" y="258" class="s">READY:{port}</text>
       <!-- external -->
       <rect x="10" y="316" width="220" height="80" rx="12" class="nm"/>
       <text x="26" y="344" class="t">External agents</text><text x="26" y="366" class="s">Claude Code · Codex</text><text x="26" y="384" class="s">plugins · .mcp.json</text>
       <!-- weights -->
       <rect x="10" y="432" width="220" height="92" rx="12" class="ai"/>
-      <text x="26" y="460" class="t" style="fill:var(--cyan)">Local weights</text><text x="26" y="482" class="s">Laya · ModernBERT heads</text><text x="26" y="500" class="s">Kev / LitJev-Qwen3.8</text><text x="26" y="518" class="s">Qwen3Guard · Granite</text>
+      <text x="26" y="460" class="t" style="fill:var(--cyan)">Local weights</text><text x="26" y="482" class="s">Julia 1 · bundled ONNX</text><text x="26" y="500" class="s">Kev / LitJev-Qwen3.8</text><text x="26" y="518" class="s">Qwen3Guard · Granite</text>
       <!-- crate stack -->
       <rect x="260" y="170" width="240" height="56" rx="10" class="n2"/>
-      <text x="276" y="194" class="t">decide-mcp</text><text x="276" y="214" class="s">#[tool_router] · resources</text>
+      <text x="276" y="194" class="t">decide-mcp</text><text x="276" y="214" class="s">rmcp 3.5.0 · MCP tools</text>
       <rect x="514" y="170" width="476" height="56" rx="10" class="n2"/>
       <text x="530" y="194" class="t">decide-policy · Decider API</text><text x="530" y="214" class="s">cascade · outcome = act | review | escalate</text>
       <rect x="260" y="240" width="730" height="46" rx="10" class="n"/>
@@ -395,7 +398,7 @@ footer svg{width:18px;height:18px}
       <rect x="260" y="300" width="172" height="72" rx="10" class="n2"/>
       <text x="274" y="326" class="t">decide-tripwire</text><text x="274" y="346" class="s">aho-corasick · regex</text><text x="274" y="362" class="s">clinician rule packs</text>
       <rect x="446" y="300" width="172" height="72" rx="10" class="n2"/>
-      <text x="460" y="326" class="t">decide-encoder</text><text x="460" y="346" class="s">candle ModernBERT</text><text x="460" y="362" class="s">ort (Julia, LiteRT)</text>
+      <text x="460" y="326" class="t">decide-encoder</text><text x="460" y="346" class="s">candle ModernBERT</text><text x="460" y="362" class="s">ort · Julia 1 default</text>
       <rect x="632" y="300" width="172" height="72" rx="10" class="n2"/>
       <text x="646" y="326" class="t">decide-llm</text><text x="646" y="346" class="s">logit reader · fork</text><text x="646" y="362" class="s">candle-vllm · llguidance</text>
       <rect x="818" y="300" width="172" height="72" rx="10" class="n2"/>
@@ -416,7 +419,7 @@ footer svg{width:18px;height:18px}
       <path d="M500,198 H508" class="e"/>
       <path d="M230,470 H244 V336 H254" class="e ai flow" marker-end="url(#a1c)"/>      <text x="236" y="420" class="lbl" transform="rotate(-90 236 420)" style="fill:var(--cyan)">loads</text>
     </svg>
-    <figcaption>One library, four ways in. The Boss is the only host that talks to it over a process boundary: it spawns the <code>knowme-decide</code> sidecar the same way it ships <code>rust-mcp-filesystem</code> and <code>uar-sidecar</code> today. UAR, KnowMe and the Prior-Auth host link <code>decide-policy</code> directly, so decisions on PHI never leave the process.</figcaption>
+    <figcaption>One library, four ways in. The Boss is the only host that talks to it over a process boundary: it spawns the <code>knowme-decide</code> sidecar the same way it ships <code>rust-mcp-filesystem</code> and <code>uar-sidecar</code> today. UAR, KnowMe and the Prior-Auth host link <code>decide-policy</code> directly, with the same trusted locality enforcement as HTTP and MCP callers. DeviceOnly stays on the device; clinic dispatch needs an explicit host grant.</figcaption>
   </figure>
 
   <h3>Workspace layout</h3>
@@ -427,40 +430,160 @@ footer svg{width:18px;height:18px}
       <tr><td><code>decide-core</code></td><td><code>DecisionSpec</code>, <code>Choice/Score/Noul</code>, <code>Decision</code>, <code>Outcome</code>, and the traits <code>DecisionBackend</code>, <code>Calibrator</code>, <code>Tripwire</code>, <code>AuditSink</code>. No I/O, no async runtime</td><td>serde, schemars, thiserror</td><td>Everywhere, including wasm32 and Android</td></tr>
       <tr><td><code>decide-schema</code></td><td>TypeSafe <code>/v1/systemone</code> wire compatibility, so Jev SDKs, Kev eval suites and Jev replay traffic run unchanged. JSON Schema export for MCP tool inputs</td><td>serde_json</td><td>Everywhere</td></tr>
       <tr><td><code>decide-tripwire</code></td><td>Deterministic, versioned, signed rule packs (crisis lexicon, means, abuse, overdose, PHI patterns). A hit always escalates</td><td>aho-corasick, regex</td><td>Everywhere; always compiled in</td></tr>
-      <tr><td><code>decide-encoder</code></td><td>ModernBERT/mmBERT heads (Laya weights, your fine-tunes, GLiClass). Zero-shot and fine-tuned Choice</td><td>candle (<code>candle</code>), ort (<code>onnx</code>), tokenizers</td><td>Mac Metal, CUDA, CPU; ONNX on Android and Windows</td></tr>
+      <tr><td><code>decide-encoder</code></td><td>Bundled Julia 1: Choice, Score and Noul. Optional Laya, fine-tuned heads and GLiClass</td><td>candle (<code>candle</code>), ort (<code>onnx</code>), tokenizers</td><td>Native ONNX on Windows, macOS, Linux, Android and iOS; acceptance pending</td></tr>
       <tr><td><code>decide-llm</code></td><td>Jev-style logit reader over Qwen3.8 (your LitJev port). Prefix prefill, per-question fork, DeltaNet state snapshot. llguidance for generated fields. A remote OpenAI-compatible logprobs adapter for liter-llm</td><td>candle-vllm fork (<code>local-llm</code>), llguidance, reqwest (<code>remote</code>)</td><td>Desktop GPU, on-prem GPU</td></tr>
       <tr><td><code>decide-guard</code></td><td>Qwen3Guard categories, Granite Guardian yes/no logprob with criteria you supply, streaming token hooks</td><td>shares <code>decide-llm</code> runtime</td><td>Desktop and on-prem GPU (0.6B Qwen3Guard is phone-capable)</td></tr>
       <tr><td><code>decide-calibrate</code></td><td>Temperature fitting, Mondrian split conformal, recall floors per class. Versioned, signed calibration artifacts per spec, clinic or counselor</td><td>ndarray (small)</td><td>Everywhere (fit on desktop or server, apply on device)</td></tr>
       <tr><td><code>decide-policy</code></td><td>The <code>Decider</code> cascade. Locality enforcement (never escalates locality on its own), budgets, act/review/escalate mapping, Cedar context export</td><td>tokio (<code>rt</code>)</td><td>Everywhere</td></tr>
       <tr><td><code>decide-audit</code></td><td>Append-only, hash-chained decision records. Override capture, so human corrections become calibration labels. Event emission</td><td>blake3, serde</td><td>Everywhere; the host provides storage</td></tr>
       <tr><td><code>decide-mcp</code></td><td>rmcp server: tools, resources, <code>ui://</code> review card. stdio and streamable HTTP</td><td>rmcp (<code>server</code>, <code>transport-streamable-http-server</code>)</td><td>Desktop and server</td></tr>
+      <tr><td><code>decide-backends</code></td><td>Backend registry and adapters: <code>jev</code>, generic <code>systemone-http</code>, <code>laya-candle</code>, <code>laya-mlx</code> worker, <code>onnx-encoder</code>, <code>candle-vllm</code> instances, <code>qwen-remote</code></td><td>reqwest, candle, ort (per feature)</td><td>Per backend</td></tr>
+      <tr><td><code>decide-proxy</code></td><td>Sensitivity gate (locality ceiling), backend router, tier escalation, shadow comparisons</td><td>decide-policy</td><td>Everywhere</td></tr>
+      <tr><td><code>decide-server</code></td><td>Axum: <code>/v1/systemone</code> (Jev wire), <code>/v1/decide</code>, SSE, <code>/mcp</code>, registry and metrics</td><td>axum <code>=0.8.9</code>, rmcp <code>=3.5.0</code></td><td>Desktop and server</td></tr>
+      <tr><td><code>decide-wasm</code></td><td>Browser build of the pure crates, plus a JS <code>DecisionProvider</code></td><td>wasm-bindgen</td><td>Browser</td></tr>
       <tr><td><code>knowme-decide</code> (bin)</td><td>Sidecar: <code>mcp --stdio</code> or <code>serve --port 0</code> printing <code>READY:{port}</code>, exits when stdin closes, weight manager, <code>calibrate fit</code> CLI</td><td>clap, axum</td><td>darwin-arm64, darwin-x64, win32-x64, win32-arm64</td></tr>
     </tbody></table></div>
 
-  <div class="note warn"><p><b>Two version pins to settle first.</b> UAR pins <code>rmcp =3.1.2</code> and prior-auth uses <code>rmcp 3.4.0</code>, so either <code>decide-mcp</code> is generic over the rmcp minor version or UAR moves to 3.4. UAR builds on <code>candle 0.11</code> while KnowMe's workspace still declares <code>candle 0.7</code> (through the mistral.rs fork patch). <code>decide-encoder</code> should target 0.11, and KnowMe needs the bump before it can link the candle backends. Until then, KnowMe can use the <code>onnx</code> feature.</p></div>
+  <div class="note warn"><p><b>Pins to settle first.</b> Use rmcp <code>=3.5.0</code>, the latest, released 28 Sep 2026; it supports MCP 2026-07-28 and 2025-11-25. UAR pins <code>=3.1.2</code> and prior-auth uses <code>3.4.0</code>, and both move to 3.5.0 in their integration milestones. <code>decide-mcp</code> keeps rmcp types out of its public API. UAR builds on candle <code>0.11</code> while KnowMe still declares <code>0.7</code>, so KnowMe uses the <code>onnx</code> encoder feature until it bumps. Record every pin by hand in <code>versions.toml</code>.</p></div>
 
-  <h3>The Rust API everyone links</h3>
-<pre><code><span class="c-c">// decide-core types, decide-policy cascade: identical in UAR, KnowMe and aso-host</span>
-<span class="c-k">use</span> knowme_decide::{DecisionSpec, Decider, Locality, Outcome};
+  <h3>The host contract everyone shares</h3>
+  <p>The normative proposed types are in PLAYBOOK §5. Choice returns a selected option and distribution; Score returns a level distribution and expected value; each Noul returns its own P(true) and true/false prediction set. Batches retain per-question outcomes. These are planned contracts, not an available Rust API.</p>
+<pre><code>Authenticated host policy and trusted data provenance authorize destinations.
+Tripwires run first. A sensitivity model can only remove destinations.
+An eligible backend proposes an answer; every required guard runs.
+The pure policy returns a proposal and redacted audit record.
+The trusted host persists the audit record before releasing Act.
+Audit failure withholds Act and reports an explicit failure without a fabricated audit ID.
+Urgent Escalate remains deliverable with an explicit audit-failure status.
+Clinical state changes require a separate human-confirmed host command.</code></pre>
+</section>
 
-<span class="c-k">let</span> spec = DecisionSpec::choice(<span class="c-s">"counselme.sufficiency.v3"</span>)
-    .question(<span class="c-s">"Can this draft reply go to the patient without counselor review?"</span>)
-    .options([<span class="c-s">"send"</span>, <span class="c-s">"send_and_flag"</span>, <span class="c-s">"hold_for_clinician"</span>, <span class="c-s">"crisis_protocol"</span>])
-    .recall_floor(<span class="c-s">"crisis_protocol"</span>, <span class="c-t">0.99</span>)      <span class="c-c">// Mondrian conformal guarantee</span>
-    .recall_floor(<span class="c-s">"hold_for_clinician"</span>, <span class="c-t">0.95</span>)
-    .tripwires(<span class="c-s">"counselme-crisis@2026.10"</span>)        <span class="c-c">// signed, clinician-owned pack</span>
-    .locality(Locality::DeviceOnly);                 <span class="c-c">// PHI never leaves the process</span>
+<section class="block" id="proxy" x-data="proxy()">
+  <div class="sechead"><p class="eyebrow">04b · Build <span class="tag new">UPDATED 28 SEP</span></p><h2>The decision proxy</h2><p class="lede">One Axum server exposes TypeSafe's Jev API, a native API and MCP. The default route is bundled Julia ONNX. Optional learned routing ranks configured Jev, Qwen, Laya and other compatible deployments: trusted host policy sets permitted destinations and a sensitivity gate may only narrow them.</p></div>
 
-<span class="c-k">let</span> d = decider.decide(&amp;spec, &amp;state).<span class="c-k">await</span>?;
-<span class="c-k">match</span> d.outcome {
-    Outcome::Act(v)                     =&gt; send(v, &amp;draft),
-    Outcome::Review { set, .. }         =&gt; queue_for_counselor(set, &amp;draft, d.audit_id),
-    Outcome::Escalate { reason, .. }    =&gt; crisis_protocol(reason),   <span class="c-c">// 988 + counselor alert</span>
-}</code></pre>
+  <figure>
+    <div class="figbar" role="group" aria-label="Proxy scenario">
+      <template x-for="s in scenarios" :key="s.id">
+        <button type="button" class="chip" :aria-pressed="(active===s.id).toString()" @click="active=s.id" x-text="s.label"></button>
+      </template>
+    </div>
+    <svg class="dg" viewBox="0 0 1000 530" role="img" aria-label="Decision proxy. Jev SDKs, MCP clients and KnowMe hosts call decide-server, which serves the Jev-compatible /v1/systemone, native /v1/decide and MCP at /mcp. Every request passes trusted host authorization and a sensitivity veto, then the backend router, which picks a backend within the authorized destinations: hosted Jev or an approved Qwen API for explicitly permitted non-PHI data only, candle-vllm Qwen3.8-27B on clinic GPUs, or on-device Laya MLX, Laya candle, ONNX encoders and small local Qwen. Browser pages run local inference with decide-wasm, ONNX Runtime Web and PGlite; DeviceOnly disables off-device synchronization.">
+      <defs>
+        <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker>
+      </defs>
+      <!-- clients -->
+      <g :class="n('c1')"><rect x="10" y="40" width="180" height="64" rx="10" class="n"/><text x="24" y="66" class="t">Jev SDKs · apps</text><text x="24" y="86" class="s">POST /v1/systemone</text></g>
+      <g :class="n('c2')"><rect x="10" y="124" width="180" height="64" rx="10" class="n"/><text x="24" y="150" class="t">MCP clients</text><text x="24" y="170" class="s">Claude Code · UAR · Boss</text></g>
+      <g :class="n('c3')"><rect x="10" y="208" width="180" height="64" rx="10" class="n"/><text x="24" y="234" class="t">KnowMe hosts</text><text x="24" y="254" class="s">POST /v1/decide</text></g>
+      <g :class="n('c4')"><rect x="10" y="446" width="180" height="64" rx="10" class="n"/><text x="24" y="472" class="t">Browser page</text><text x="24" y="492" class="s">prior-auth · KnowMe web</text></g>
+      <!-- server -->
+      <g :class="n('srv')"><rect x="230" y="40" width="190" height="232" rx="12" class="n2"/>
+        <text x="246" y="66" class="t">decide-server</text>
+        <text x="246" y="96" class="s">/v1/systemone · Jev wire</text>
+        <text x="246" y="118" class="s">/v1/decide · native</text>
+        <text x="246" y="140" class="s">/mcp · rmcp 3.5.0</text>
+        <text x="246" y="162" class="s">MCP 2026-07-28 + 2025-11-25</text>
+        <text x="246" y="184" class="s">SSE: route · answer · done</text>
+        <text x="246" y="206" class="s">legacy SSE shim (off)</text>
+        <text x="246" y="256" class="lbl">Axum 0.8.9</text></g>
+      <!-- proxy stages -->
+      <g :class="n('gate')"><rect x="460" y="40" width="180" height="100" rx="12" class="accent"/>
+        <text x="474" y="64" class="t" style="fill:var(--ember)">Policy + veto</text>
+        <text x="474" y="86" class="s">trusted grants · tags</text><text x="474" y="104" class="s">PHI tripwires</text><text x="474" y="122" class="s">optional model veto</text></g>
+      <g :class="n('router')"><rect x="460" y="172" width="180" height="100" rx="12" class="ai"/>
+        <text x="474" y="196" class="t" style="fill:var(--cyan)">Backend router</text>
+        <text x="474" y="218" class="s">capability filters</text><text x="474" y="236" class="s">optional ranking</text><text x="474" y="254" class="s">escalate ≤ ceiling</text></g>
+      <!-- bands -->
+      <rect x="680" y="20" width="310" height="122" rx="12" class="nm"/>
+      <text x="694" y="40" class="lbl">HOSTED · non-PHI only (I-11)</text>
+      <g :class="n('jev')"><rect x="694" y="50" width="138" height="80" rx="10" class="n2"/><text x="708" y="76" class="t">Jev</text><text x="708" y="96" class="s">TypeSafe</text><text x="708" y="114" class="s">~240 ms</text></g>
+      <g :class="n('qwenr')"><rect x="840" y="50" width="138" height="80" rx="10" class="n2"/><text x="854" y="76" class="t">qwen-remote</text><text x="854" y="96" class="s">approved API only</text><text x="854" y="114" class="s">scoring gate pending</text></g>
+      <text x="835" y="138" text-anchor="middle" class="lbl" style="fill:var(--red)" x-show="blocked()">blocked by ceiling</text>
+      <rect x="680" y="152" width="310" height="74" rx="12" class="nm"/>
+      <text x="694" y="170" class="lbl">CLINIC GPU</text>
+      <g :class="n('cv27')"><rect x="694" y="178" width="284" height="40" rx="10" class="n2"/><text x="708" y="203" class="t">Qwen3.8-27B</text><text x="964" y="203" text-anchor="end" class="s">candle-vllm · LitJev</text></g>
+      <rect x="680" y="236" width="310" height="184" rx="12" class="nm"/>
+      <text x="694" y="254" class="lbl">DEVICE</text>
+      <g :class="n('mlx')"><rect x="694" y="264" width="138" height="70" rx="10" class="n2"/><text x="708" y="290" class="t">laya-mlx</text><text x="708" y="310" class="s">Apple Silicon</text><text x="708" y="326" class="s">7–13 ms p50</text></g>
+      <g :class="n('candle')"><rect x="840" y="264" width="138" height="70" rx="10" class="n2"/><text x="854" y="290" class="t">laya-candle</text><text x="854" y="310" class="s">Metal · CUDA</text><text x="854" y="326" class="s">CPU</text></g>
+      <g :class="n('onnx')"><rect x="694" y="342" width="138" height="66" rx="10" class="n2"/><text x="708" y="368" class="t">julia-onnx</text><text x="708" y="388" class="s">Julia 1 · mmBERT</text></g>
+      <g :class="n('qsmall')"><rect x="840" y="342" width="138" height="66" rx="10" class="n2"/><text x="854" y="368" class="t">candle-vllm</text><text x="854" y="388" class="s">Qwen 0.8B–9B</text></g>
+      <g :class="n('browser')"><rect x="230" y="440" width="760" height="76" rx="12" class="ai"/>
+        <text x="246" y="466" class="t" style="fill:var(--cyan)">BROWSER · decide-wasm</text>
+        <text x="246" y="490" class="s">ONNX Web · calibrated browser weights · PGlite audit + labels · DeviceOnly: no sync</text></g>
+      <!-- edges -->
+      <path :class="e('c1')" d="M190,72 H224" class="e" marker-end="url(#a5)"/>
+      <path :class="e('c2')" d="M190,156 H224" class="e" marker-end="url(#a5)"/>
+      <path :class="e('c3')" d="M190,240 H224" class="e" marker-end="url(#a5)"/>
+      <path :class="e('c4')" d="M190,478 H224" class="e" marker-end="url(#a5)"/>
+      <path :class="e('s-g')" d="M420,90 H454" class="e" marker-end="url(#a5)"/>
+      <path :class="e('g-r')" d="M550,140 V166" class="e" marker-end="url(#a5)"/><text x="558" y="158" class="lbl">ceiling</text>
+      <path :class="e('r-h')" d="M640,186 H658 V81 H688" class="e" marker-end="url(#a5)"/>
+      <path :class="e('r-c')" d="M640,200 H688" class="e" marker-end="url(#a5)"/>
+      <path :class="e('r-d')" d="M640,250 H658 V299 H688" class="e" marker-end="url(#a5)"/>
+      <circle r="6" class="pkt" x-show="active==='phi'"><animateMotion dur="3.4s" repeatCount="indefinite" path="M100,240 H325 V90 H550 V222 H664 V198 H836"/></circle>
+      <circle r="6" class="pkt-ai" x-show="active==='many'"><animateMotion dur="3.4s" repeatCount="indefinite" path="M100,72 H325 V90 H550 V222 H658 V90 H763"/></circle>
+      <circle r="6" class="pkt-ai" x-show="active==='zh'"><animateMotion dur="3.4s" repeatCount="indefinite" path="M100,156 H325 V90 H550 V222 H658 V299 H763"/></circle>
+      <circle r="6" class="pkt-ai" x-show="active==='web'"><animateMotion dur="2.6s" repeatCount="indefinite" path="M100,478 H610"/></circle>
+    </svg>
+    <div class="outcome" aria-live="polite" x-html="current().outcome"></div>
+    <figcaption>The gate can only narrow where data goes (I-12). Any Jev-compatible server (<code>laya-serve</code>, openjev-sglang, Kev, another <code>knowme-decide</code>) registers through the generic <code>systemone-http</code> adapter only after deployment identity, score capabilities and host-authorized destinations are checked. Endpoint labels and credentials cannot grant egress.</figcaption>
+  </figure>
+
+  <h3>Surfaces</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Route</th><th>Contract</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td><code>POST /v1/systemone</code></td><td>Jev-compatible successful answers for explicitly authorized, nonclinical advisory requests. Choice, Score and Noul preserve their primitive semantics. Upstream errors remain 401, 422, 429 and 529</td><td>Native safety outcomes cannot be hidden: refuse with the documented KnowMe 403 policy error when Review or Escalate must be enforced. Optional <code>x_knowme</code> metadata never grants action permission</td></tr>
+      <tr><td><code>POST /v1/decide</code></td><td>Native: versioned spec and state; primitive-specific answers, per-question outcomes, provenance and explicit audit status</td><td>Required for KnowMe safety-enforced hosts. Act requires required guards, valid calibration and a durable host audit receipt</td></tr>
+      <tr><td><code>Accept: text/event-stream</code></td><td>Planned KnowMe SSE extension: route and progress first; answers and final outcomes only after their safety and audit gates. An error terminates incomplete work</td><td>Progress is never actionable. Batch partial results remain provisional until the final completion contract; Jev itself does not stream</td></tr>
+      <tr><td><code>POST /mcp</code></td><td>MCP Streamable HTTP, rmcp <code>=3.5.0</code>: stateless 2026-07-28, plus <code>legacy_session_mode</code> for 2025-11-25</td><td>Same tools as stdio</td></tr>
+      <tr><td><code>GET /sse</code>, <code>POST /messages</code></td><td>Legacy HTTP+SSE shim (2024-11-05)</td><td>Feature-gated and off by default; deprecated in the spec</td></tr>
+      <tr><td><code>/v1/models</code>, <code>/v1/backends</code>, <code>/healthz</code>, <code>/readyz</code>, <code>/metrics</code></td><td>Registry, health, Prometheus</td><td>Feed the operator panel</td></tr>
+    </tbody></table></div>
+
+  <h3 id="builtin-default">Built in on desktop and mobile</h3>
+  <div class="grid2">
+    <div class="card"><h4>Installed before first launch</h4><p>The planned <code>julia-onnx</code> bundle includes the verified Julia 1 graph and weights, tokenizer, native ONNX Runtime, manifest and default settings. Windows, macOS and Linux can use a linked library or bundled sidecar; Android and iOS use an in-process host library/FFI. No Python worker, first-run download or user-run model server. Rust owns the API; ONNX Runtime adds native C/C++ dependencies. The core remains free of I/O.</p></div>
+    <div class="card"><h4>Jev is optional</h4><p>A TypeSafe key enables provider availability, not permission to send data. Local remains the default until explicit selection or an authorized routing policy permits Jev. PHI, unknown provenance and <code>DeviceOnly</code> never reach hosted providers. Missing or invalid keys cannot prevent local startup. Sidecars use <code>JEV_API_KEY</code>; mobile credentials stay in the host secure store, outside remote-free <code>decide-lite</code>.</p></div>
+    <div class="card"><h4>Useful answers with explicit limits</h4><p>Julia supports 2–20 candidates per call, fractional ordinal Score and independent Noul. The framework limit of 255 does not extend Julia. Unsupported counts and overlength input produce conservative outcomes or explicit refusal, without silent truncation, splitting or remote fallback. Missing valid calibration or a required guard means Review or Escalate. No starter calibration evidence is invented.</p></div>
+    <div class="card"><h4>The cost of zero setup</h4><p>The 144.3M-parameter FP32 weights alone are about 550.5 MiB, plus tokenizer and runtime memory. Quantization is unproven for this release. The 8,192-token runtime capacity has smoke-test evidence; earlier accuracy evaluation used 1,024 tokens. Published Android Python-driven measurements do not certify a native app or iOS. Exclude the reported faulty XNNPACK path until parity passes.</p></div>
+  </div>
+  <p class="note"><b>Release gate:</b> M0 Spike F proves native feasibility; M1a exercises Julia plus explicitly permitted Jev; M4 proves fresh-install offline operation, primitive/logit parity, cold/warm latency, peak memory, package size, resource failures and host audit/egress behavior on all five native platforms. This is a selected plan, not shipped support. Browser/WebGPU has a separate acceptance profile.</p>
+
+  <h3>Backends</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Backend</th><th>Adapter</th><th>Locality</th><th>Enabled when</th><th>Checked 28 Sep</th></tr></thead>
+    <tbody>
+      <tr><td><b>jev</b></td><td><code>systemone-http</code> → api.typesafe.ai (Bearer)</td><td><span class="tag crit">hosted · PHI excluded</span></td><td>Credentials plus trusted grant and approved deployment configuration</td><td>Historical synthetic probe: <code>jev-1.13.0</code>, 236 ms. Connectivity evidence, not production acceptance</td></tr>
+      <tr><td><b>qwen-remote</b></td><td>Candidate-scoring adapter; incomplete top-k scores cannot authorize Act. No invented probability mass or false claim of complete normalization</td><td><span class="tag crit">hosted · PHI excluded</span></td><td>Permitted API or explicit provider authorization, host grant and verified scoring capabilities</td><td>Historical Token Plan probe returned top-five tokens in 1.7 s. Subscription backend use is restricted; this probe does not qualify a production adapter</td></tr>
+      <tr><td><b>laya-mlx</b></td><td>Supervised <code>laya_mlx</code> worker (Apache-2.0); native <code>mlx-rs</code> 0.32 later</td><td><span class="tag low">device</span></td><td>macOS on Apple Silicon, MLX ≥ 0.32.2, pinned checkpoints verified</td><td>The author reports 13.4 ms (EN) and 7.4 ms (multilingual) p50 on M3 Max, and 63/63 parity with upstream</td></tr>
+      <tr><td><b>laya-candle</b></td><td>In-process ModernBERT/mmBERT (<code>laya-rust</code>)</td><td><span class="tag low">device</span></td><td>Weights verified</td><td>—</td></tr>
+      <tr><td><b>julia-onnx · default</b></td><td>Rust + embedded native ONNX Runtime; bundled Julia 1</td><td><span class="tag low">device</span></td><td>Complete verified bundle; no configuration</td><td>Native platform acceptance pending</td></tr>
+      <tr><td><b>candle-vllm:&lt;instance&gt;</b></td><td>Planned LitJev scoring route; DeltaNet state fork and full candidate scores remain M0 feasibility gates</td><td><span class="tag mod">device · clinic</span></td><td>Verified deployment revision, capabilities and host-authorized destination</td><td>Qwen3.8-27B and smaller checkpoints require runtime-specific receipts before being advertised</td></tr>
+      <tr><td><b>systemone-http:&lt;name&gt;</b></td><td>Generic Jev-wire client</td><td>Verified deployment</td><td>Wire and scoring conformance, deployment identity and trusted host grant</td><td>Upstream Laya offers <code>laya-serve</code>; compatibility alone does not certify calibration</td></tr>
+    </tbody></table></div>
+
+  <h3>Planned MCP acceptance matrix (2026-07-28, rmcp 3.5.0)</h3>
+  <p>Every row is pending implementation and host interoperability evidence. Start with version handling, authentication, stdio, Streamable HTTP and decision tools. Optional capabilities and extensions are advertised only after their own tests pass; a dependency pin is not certification.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Area</th><th>Acceptance target</th></tr></thead>
+    <tbody>
+      <tr><td><b>Lifecycle</b></td><td><code>server/discover</code>, per-request <code>_meta</code> version and capabilities, <code>UnsupportedProtocolVersion</code> (−32022), and the <code>initialize</code> handshake only in 2025-11-25 mode</td></tr>
+      <tr><td><b>Transports</b></td><td>stdio; stateless Streamable HTTP with <code>Mcp-Method</code> and <code>Mcp-Name</code> headers; the legacy HTTP+SSE shim (off by default)</td></tr>
+      <tr><td><b>Server features</b></td><td>Tools in deterministic order with <code>outputSchema</code> and annotations; resources and templates; prompts; completions; <code>ttlMs</code>/<code>cacheScope</code></td></tr>
+      <tr><td><b>Streams</b></td><td><code>subscriptions/listen</code>; progress and cancellation on each request's own response stream</td></tr>
+      <tr><td><b>MRTR</b></td><td><code>input_required</code> results for clarifying elicitations and admin confirmation</td></tr>
+      <tr><td><b>Extensions</b></td><td>Tasks (long evals and calibration fits) and MCP Apps (<code>ui://decide/review-card</code>)</td></tr>
+      <tr><td><b>Auth</b></td><td>OAuth 2.1 resource server, protected-resource metadata, <code>iss</code> validation (RFC 9207), Client ID Metadata Documents</td></tr>
+      <tr><td><b>Outside the modern core target</b></td><td>Roots, Sampling and Logging: all deprecated in 2026-07-28. We log to stderr and OpenTelemetry instead</td></tr>
+    </tbody></table></div>
+
+  <div class="note warn"><p><b>The uncomfortable part.</b> A sensitivity false negative cannot establish permission to disclose data. Hosted routing requires a trusted grant for known, approved non-PHI data; unknown and internal data are not automatically eligible. The 0.999 coverage target is a statistical evaluation target, not a zero-leak guarantee. Shadow calls obey the same grants. The cost is more Review outcomes and a substantial labeling and validation burden.</p></div>
 </section>
 
 <section class="block" id="cascade" x-data="cascade()">
-  <div class="sechead"><p class="eyebrow">05 · Build <span class="tag new">NEW</span></p><h2>The decision cascade</h2><p class="lede">Each layer either decides or passes the case on. Tripwires can exit straight to escalation. A confident encoder skips the LLM head. Calibration is the last step before any outcome.</p></div>
+  <div class="sechead"><p class="eyebrow">05 · Build <span class="tag new">NEW</span></p><h2>The decision cascade</h2><p class="lede">Tripwires can exit straight to escalation. A calibrated encoder may skip the LLM head, but never a required guard. A guard veto survives later calibration. The host commits the audit record before releasing Act; failures are explicit.</p></div>
   <figure>
     <div class="figbar" role="group" aria-label="Scenario">
       <template x-for="s in scenarios" :key="s.id">
@@ -477,9 +600,9 @@ footer svg{width:18px;height:18px}
       <g :class="n('llm')"><rect x="505" y="60" width="130" height="64" rx="10" class="ai"/><text x="570" y="88" text-anchor="middle" class="t">LLM head</text><text x="570" y="108" text-anchor="middle" class="s">Kev / LitJev</text></g>
       <g :class="n('guard')"><rect x="670" y="60" width="130" height="64" rx="10" class="n2"/><text x="735" y="88" text-anchor="middle" class="t">Guard</text><text x="735" y="108" text-anchor="middle" class="s">Granite · Qwen3G</text></g>
       <g :class="n('cal')"><rect x="835" y="60" width="155" height="64" rx="10" class="nm"/><text x="912" y="88" text-anchor="middle" class="t">Calibrate</text><text x="912" y="108" text-anchor="middle" class="s">conformal set</text></g>
-      <g :class="n('act')"><rect x="500" y="240" width="150" height="56" rx="10" class="n"/><text x="575" y="264" text-anchor="middle" class="t" style="fill:var(--green)">Act</text><text x="575" y="284" text-anchor="middle" class="s">set = {one}</text></g>
+      <g :class="n('act')"><rect x="500" y="240" width="150" height="56" rx="10" class="n"/><text x="575" y="264" text-anchor="middle" class="t" style="fill:var(--green)">Act</text><text x="575" y="284" text-anchor="middle" class="s">audit committed</text></g>
       <g :class="n('rev')"><rect x="670" y="240" width="150" height="56" rx="10" class="n"/><text x="745" y="264" text-anchor="middle" class="t" style="fill:var(--amber)">Review</text><text x="745" y="284" text-anchor="middle" class="s">human confirms</text></g>
-      <g :class="n('esc')"><rect x="840" y="240" width="150" height="56" rx="10" class="accent"/><text x="915" y="264" text-anchor="middle" class="t" style="fill:var(--ember)">Escalate</text><text x="915" y="284" text-anchor="middle" class="s">always, logged</text></g>
+      <g :class="n('esc')"><rect x="840" y="240" width="150" height="56" rx="10" class="accent"/><text x="915" y="264" text-anchor="middle" class="t" style="fill:var(--ember)">Escalate</text><text x="915" y="284" text-anchor="middle" class="s">audit status explicit</text></g>
 
       <path :class="e('in-trip')" d="M140,92 H169" class="e" marker-end="url(#a2)"/>
       <path :class="e('trip-enc')" d="M305,92 H334" class="e" marker-end="url(#a2)"/><text x="310" y="84" class="lbl">clear</text>
@@ -499,19 +622,19 @@ footer svg{width:18px;height:18px}
       <circle r="6" class="pkt-ai" x-show="active==='pa'"><animateMotion dur="3.6s" repeatCount="indefinite" path="M75,92 H240 H405 H570 H735 H912 V200 H745 V268"/></circle>
     </svg>
     <div class="outcome" aria-live="polite" x-html="current().outcome"></div>
-    <figcaption>Choose a scenario to see which layers make the call. Every path ends in the audit log. Human corrections at Review become the labels the next calibration fit uses.</figcaption>
+    <figcaption>Choose a scenario to see which layers make the call. Every path attempts host-owned audit persistence. Failure blocks Act and remains visible alongside urgent Escalate. Human review samples across all outcomes, plus overrides, feed future calibration.</figcaption>
   </figure>
 </section>
 
 <section class="block" id="tools">
-  <div class="sechead"><p class="eyebrow">06 · Build <span class="tag new">NEW</span></p><h2>MCP tool surface</h2><p class="lede">The sidecar exposes the same <code>Decider</code> as MCP tools. Decision tools are read-only by annotation. Only calibration fitting changes state, and it is admin-gated.</p></div>
+  <div class="sechead"><p class="eyebrow">06 · Build <span class="tag new">NEW</span></p><h2>MCP tool surface</h2><p class="lede">Over stdio and Streamable HTTP (MCP 2026-07-28 via rmcp 3.5.0), the sidecar exposes the same <code>Decider</code> as MCP tools. Decision tools do not write business state. The trusted host owns mandatory audit writes. Only calibration fitting is a model-visible mutating tool, and it is admin-gated; review confirmations use a separate authenticated host command.</p></div>
   <div class="tbl"><table>
     <thead><tr><th>Tool / resource</th><th>Input</th><th>Returns</th><th>Effect</th></tr></thead>
     <tbody>
-      <tr><td><code>decide_choice</code></td><td>state, options[] (≤255), spec id or inline spec</td><td>value, per-option probs, prediction set, outcome</td><td><span class="tag low">readOnly</span></td></tr>
+      <tr><td><code>decide_choice</code></td><td>state, options[] (≤255), spec id or inline spec</td><td>Choice answer, candidate probabilities and completeness, prediction set, outcome, audit status</td><td><span class="tag low">readOnly</span></td></tr>
       <tr><td><code>decide_score</code></td><td>state, ordinal rubric</td><td>level, distribution, expected score, outcome</td><td><span class="tag low">readOnly</span></td></tr>
-      <tr><td><code>decide_noul</code></td><td>state, statement(s)</td><td>P(true) for each statement, calibrated</td><td><span class="tag low">readOnly</span></td></tr>
-      <tr><td><code>decide_batch</code></td><td>one state, many questions</td><td>all answers; shared prefill, forked per question</td><td><span class="tag low">readOnly</span></td></tr>
+      <tr><td><code>decide_noul</code></td><td>state, statement(s)</td><td>Independent P(true), true/false prediction set and outcome for each statement</td><td><span class="tag low">readOnly</span></td></tr>
+      <tr><td><code>decide_batch</code></td><td>one state, many questions</td><td>Per-question primitive answer, outcome and failure status; shared prefill only on verified runtimes</td><td><span class="tag low">readOnly</span></td></tr>
       <tr><td><code>route_intent</code></td><td>message, route table (hierarchical)</td><td>domain → agent path with probs, abstain flag</td><td><span class="tag low">readOnly</span></td></tr>
       <tr><td><code>tripwire_scan</code></td><td>text, pack id</td><td>hits with rule ids and spans</td><td><span class="tag low">readOnly</span></td></tr>
       <tr><td><code>guard_check</code></td><td>text, policy (Qwen3Guard categories or your own criteria)</td><td>label, category, score</td><td><span class="tag low">readOnly</span></td></tr>
@@ -521,24 +644,24 @@ footer svg{width:18px;height:18px}
       <tr><td><code>calibrate_fit</code></td><td>spec, labeled set ref, recall floors</td><td>new signed calibration artifact and coverage report</td><td><span class="tag mod">admin · approval</span></td></tr>
       <tr><td><code>decide://specs/{id}</code></td><td colspan="2">Resource: the versioned DecisionSpec (JSON Schema)</td><td>resource</td></tr>
       <tr><td><code>decide://calibration/{spec}@{ver}</code></td><td colspan="2">Resource: coverage, ECE and recall per class; the automation rate the floors allow</td><td>resource</td></tr>
-      <tr><td><code>ui://decide/review-card</code></td><td colspan="2">MCP App resource: a review card that shows the decision, its prediction set and a confirm/override control, so hosts can render the human step</td><td>resource</td></tr>
+      <tr><td><code>ui://decide/review-card</code></td><td colspan="2">MCP App resource: a review card that shows the decision, its prediction set and a confirm/override control, using an authenticated host command with actor identity from the session, audit/tenant binding and idempotency; it cannot be invoked by the deciding model</td><td>resource</td></tr>
     </tbody></table></div>
-  <p class="filehead">decide_choice → result (MCP structuredContent)</p>
-<pre><code>{
-  <span class="c-t">"spec"</span>: <span class="c-s">"counselme.sufficiency.v3"</span>,
-  <span class="c-t">"value"</span>: <span class="c-s">"hold_for_clinician"</span>,
-  <span class="c-t">"probs"</span>: { <span class="c-t">"send"</span>: 0.08, <span class="c-t">"send_and_flag"</span>: 0.37, <span class="c-t">"hold_for_clinician"</span>: 0.52, <span class="c-t">"crisis_protocol"</span>: 0.03 },
-  <span class="c-t">"prediction_set"</span>: [<span class="c-s">"send_and_flag"</span>, <span class="c-s">"hold_for_clinician"</span>],
-  <span class="c-t">"outcome"</span>: <span class="c-s">"review"</span>,
-  <span class="c-t">"decided_by"</span>: <span class="c-s">"llm-head"</span>,
-  <span class="c-t">"tripwires"</span>: [],
-  <span class="c-t">"calibration"</span>: { <span class="c-t">"method"</span>: <span class="c-s">"mondrian-split-conformal"</span>, <span class="c-t">"version"</span>: <span class="c-s">"2026-10-12.c4"</span>, <span class="c-t">"recall_floor"</span>: { <span class="c-t">"crisis_protocol"</span>: 0.99 } },
-  <span class="c-t">"backend"</span>: <span class="c-s">"litjev-qwen3.8-27b@candle-vllm"</span>,
-  <span class="c-t">"locality"</span>: <span class="c-s">"device-only"</span>,
-  <span class="c-t">"latency_ms"</span>: 214,
-  <span class="c-t">"audit_id"</span>: <span class="c-s">"dec_01K6ZQ3M4T9V"</span>
-}</code></pre>
-  <p class="sub" style="font-size:13.5px">The example numbers are illustrative, not measured.</p>
+  <p class="filehead">Illustrative Choice review — semantic example</p>
+<pre><code>Spec: counselme.sufficiency.v3
+Answer: hold_for_clinician
+Complete candidate probabilities:
+  send                 0.08
+  send_and_flag        0.37
+  hold_for_clinician   0.52
+  crisis_protocol     0.03
+Calibrated set: send_and_flag, hold_for_clinician
+Effective outcome: Review
+Required guards: complete; no escalation
+Deployment: local Qwen; DeviceOnly
+Calibration: valid for this deployment, scoring and routing pipeline
+Audit status: committed; durable receipt required
+Host action: show the review card; do not send clinical advice</code></pre>
+  <p class="sub" style="font-size:13.5px">Illustrative values and status, not measured results or a frozen wire schema. PLAYBOOK §5 defines the planned primitive-specific contracts; M1 freezes their serialization. Audit failure blocks Act and exposes failure without inventing a receipt.</p>
 </section>
 <section class="block" id="integration">
   <div class="sechead"><p class="eyebrow">07 · Build <span class="tag new">NEW</span></p><h2>Product integration</h2><p class="lede">Each host already has the seam. These are the exact files and types where the crate plugs in, taken from reading each repo on 27 September.</p></div>
@@ -551,7 +674,7 @@ footer svg{width:18px;height:18px}
         <li><b>Ship:</b> it lands in <code>resources/binaries/&lt;platform&gt;</code>. Add it to <code>BUNDLED_TOOLS</code> in <code>BinaryManager.ts</code> and resolve it with <code>getBinaryPath('knowme-decide')</code>.</li>
         <li><b>Register:</b> as <code>@prometheus/decide</code> in the unbuilt <code>prometheus-005-mcp-server-presets</code> change, with <code>installSource: 'builtin'</code> and stdio by default. Today's workspace-managed rows (<code>workspaceMcp.ts</code>) are the fallback pattern.</li>
         <li><b>Shared mode:</b> when UAR is enabled, run <code>knowme-decide serve --port 0</code> under a <code>DecideSidecarService</code> copied from <code>UarSidecarService.ts</code> (READY:{port}, <code>ensureReady()</code>, process-tree kill). UAR and the renderer then share one model cache.</li>
-        <li><b>Weights:</b> download on first use with the checksums pinned in the release manifest, the same way onnxruntime is fetched for local embeddings, so the installer stays small.</li>
+        <li><b>Baseline assets:</b> include Julia weights, tokenizer and native ONNX Runtime in the completed installation, verified against the release manifest before first launch. Only optional extension models may use an explicit later download.</li>
         <li><b>Operator view:</b> per <code>PRODUCT.md</code>, show requested vs. effective state: which specs are loaded, their calibration versions, the backend on each device, and the automation rate at the current floors.</li>
       </ul>
     </div>
@@ -570,7 +693,7 @@ footer svg{width:18px;height:18px}
       <h4>KnowMe · on-device L2 crate</h4>
       <ul>
         <li><b>New crate:</b> <code>gen_ui_decide</code> at L2, behind a <code>DecisionProvider</code> trait in <code>gen_ui_types</code>, mirroring <code>InferenceProvider</code>.</li>
-        <li><b>Where it runs:</b> desktop links it in-process through <code>tauri-plugin-gen-ui</code>, and mobile through <code>gen_ui_ffi</code> (flutter_rust_bridge). Android uses the <code>onnx</code> encoder feature until the candle bump lands.</li>
+        <li><b>Where it runs:</b> desktop links it in-process through <code>tauri-plugin-gen-ui</code>, and mobile through <code>gen_ui_ffi</code> (flutter_rust_bridge). Android and iOS use the embedded native ONNX baseline, subject to real-device acceptance. No mobile inference subprocess is required.</li>
         <li><b>Agent tools:</b> register native tools in <code>gen_ui_agent/src/uar.rs</code>. Surface decisions through the existing <code>agui.guardrail</code> and <code>uar.guardrail.flagged</code> events, which the UI already understands.</li>
         <li><b>Locality:</b> each spec declares its locality, and <code>decide-policy</code> enforces the model-configuration rule that resolution never escalates locality without a Cedar grant or a user prompt.</li>
         <li><b>First outbound MCP server:</b> <code>decide-mcp</code> can be KnowMe's first outbound MCP server, the one <code>docs/strategies/skill-support/README.md</code> §3 designs but hasn't built.</li>
@@ -590,13 +713,16 @@ footer svg{width:18px;height:18px}
     </div>
   </div>
 
-  <h3>Deployment tiers</h3>
+  <h3>Baseline and optional deployment tiers</h3><p>The same Julia ONNX baseline is planned for every native platform. Larger models below are opt-in extensions, not baseline installation requirements. If an extension guard required by a spec is unavailable, the baseline cannot authorize Act.</p>
   <div class="tbl"><table>
     <thead><tr><th>Tier</th><th>Hardware</th><th>Backends compiled in</th><th>Models</th><th>Typical specs</th></tr></thead>
     <tbody>
-      <tr><td><b>Phone</b> (KnowMe mobile)</td><td>Android / iOS CPU, NPU</td><td>tripwire, encoder (onnx), calibrate, audit</td><td>Julia 1 or mmBERT-small head; Qwen3Guard-0.6B optional</td><td>crisis tripwire, intent route, consent/locality, check-in timing</td></tr>
-      <tr><td><b>Desktop</b> (The Boss, KnowMe desktop)</td><td>Apple Silicon Metal; Windows CUDA/CPU</td><td>+ encoder (candle), llm (Kev-4B/9B), guard</td><td>Laya-rust, Kev-4B or 9B, Qwen3Guard-Stream-4B, Granite Guardian 8B (Q4)</td><td>sufficiency gate, action items, completion checks, UAR routing</td></tr>
+      <tr><td><b>Phone</b> (KnowMe mobile)</td><td>Android / iOS CPU, NPU</td><td>tripwire, encoder (onnx), calibrate, audit</td><td>Bundled Julia 1; extra heads/guards optional</td><td>crisis tripwire, intent route, consent/locality, check-in timing</td></tr>
+      <tr><td><b>Desktop</b> (The Boss, KnowMe desktop)</td><td>macOS / Windows / Linux CPU; accelerators optional</td><td>baseline encoder (onnx); optional candle, llm, guard</td><td>Bundled Julia 1; optional Laya, Kev and specialist guards</td><td>sufficiency gate, action items, completion checks, UAR routing</td></tr>
       <tr><td><b>Clinic on-prem</b> (prior-auth)</td><td>48–80 GB GPU</td><td>all backends</td><td>LitJev-Qwen3.8-27B or Kev-27B, Granite Guardian 8B, MedGemma 27B for extraction only</td><td>criterion evidence, denial triage, response parsing</td></tr>
+      <tr><td><b>Mac</b> (The Boss, KnowMe desktop)</td><td>Apple Silicon, MLX ≥ 0.32.2</td><td>desktop + <code>backend-laya-mlx</code></td><td>laya-mlx (EN, multilingual, typed-decisions)</td><td>optional local routing and triage</td></tr>
+      <tr><td><b>Browser</b></td><td>WebGPU or WASM</td><td><code>decide-wasm</code> + ONNX Runtime Web</td><td>Julia 1, Laya-for-web int4/int8</td><td>prior-auth web document type, KnowMe web, workflow DAGs</td></tr>
+      <tr><td><b>Hosted</b> (non-PHI only)</td><td>TypeSafe, Model Studio</td><td><code>backend-jev</code>, <code>backend-qwen-remote</code></td><td>Jev, qwen3.8-max</td><td>hard or many-option non-PHI decisions, and shadow evaluation</td></tr>
       <tr><td><b>Async audit</b></td><td>Any GPU, batch</td><td>llm, guard</td><td>gpt-oss-safeguard-20b</td><td>policy re-review of sent answers, drift reports</td></tr>
     </tbody></table></div>
 </section>
@@ -631,7 +757,7 @@ footer svg{width:18px;height:18px}
   </figure>
 
   <h3>Decision catalog</h3>
-  <p class="sub" style="font-size:14px;margin:0">Select a use case to load its decision spec. Each one is served as an HTMX fragment.</p>
+  <p class="sub" style="font-size:14px;margin:0">Select a use case to load its proposed spec. Every catalog action is subject to the finalized native outcome, required guards, valid calibration and host audit receipt; clinical changes require human confirmation. Urgent Escalate remains deliverable with explicit audit failure.</p>
   <div class="explorer" x-data="{sel:'cm-01'}">
     <div class="xlist" role="tablist" aria-label="CounselMe use cases">
       <button role="tab" hx-get="#cm-01" hx-target="#cm-pane" @click="sel='cm-01'" :aria-selected="(sel==='cm-01').toString()"><span class="id">CM-01</span><span class="nm">Crisis detection</span></button>
@@ -657,11 +783,11 @@ footer svg{width:18px;height:18px}
   <dl>
     <dt>Trigger</dt><dd>Every patient message, before any other layer runs, and every twin output token (streaming).</dd>
     <dt>Spec</dt><dd><code>counselme.crisis.v1</code>, a Choice over <code>none · passive_ideation · active_ideation_or_plan · harm_to_others · abuse_disclosure · medical_emergency</code>.</dd>
-    <dt>Layers</dt><dd>1) The signed <code>counselme-crisis</code> tripwire pack, which the clinician owns. 2) A fine-tuned ~1.5B Qwen crisis classifier (PsyCrisisBench shows a fine-tuned small model beats larger zero-shot ones). 3) Qwen3Guard-Stream's Suicide &amp; Self-Harm category as a second, uncorrelated signal.</dd>
+    <dt>Layers</dt><dd>1) The signed <code>counselme-crisis</code> tripwire pack, which the clinician owns. 2) A fine-tuned ~1.5B Qwen crisis classifier (PsyCrisisBench shows a fine-tuned small model beats larger zero-shot ones). 3) Qwen3Guard-Stream's Suicide &amp; Self-Harm category as an additional signal; error independence must be measured, not assumed.</dd>
     <dt>Outcome</dt><dd>Any tripwire hit, or any non-<code>none</code> class in the prediction set, means <b>Escalate</b>: show 988 and the counselor's safety plan, alert the counselor, and keep the twin out of the reply.</dd>
     <dt>Calibration</dt><dd>Mondrian conformal with a recall floor of ≥0.99 on every crisis class. False positives are cheap here and false negatives are catastrophic.</dd>
     <dt>Human</dt><dd>The counselor sets the after-hours protocol and reviews every escalation. The patient can always reach a human directly.</dd>
-    <dt>Labels</dt><dd>Clinician-labeled transcripts, plus synthetic crisis examples reviewed by a clinician to oversample the rare classes.</dd>
+    <dt>Labels</dt><dd>Representative clinician-labeled real transcripts supply calibration and held-out evaluation. Clinician-reviewed synthetic crisis examples may augment training and regression tests, but never count toward real calibration-positive minimums.</dd>
   </dl></div></template>
 
 <template id="frag-cm-02"><div classes="add swapin">
@@ -670,8 +796,8 @@ footer svg{width:18px;height:18px}
   <dl>
     <dt>Trigger</dt><dd>After CM-01 clears the message.</dd>
     <dt>Spec</dt><dd><code>counselme.route.v1</code>, a hierarchical Choice. The domain is one of <code>reflection · accountability · psychoeducation · scheduling_admin · out_of_scope</code>, then an agent within that domain.</dd>
-    <dt>Layers</dt><dd>Start with Laya or Julia 1 zero-shot, and switch to a fine-tuned mmBERT head once each agent has 50+ labeled messages. Two levels avoid the many-similar-labels weakness (Julia: 64% on Banking77).</dd>
-    <dt>Outcome</dt><dd>A single-agent set routes the message. A multi-agent set asks the patient one clarifying question. <code>out_of_scope</code> produces a polite handoff.</dd>
+    <dt>Layers</dt><dd>Start with bundled Julia 1 for supported requests. Fine-tuned heads require representative labels and independent evaluation. A hierarchy is an optional separately evaluated and calibrated pipeline; it does not silently remove the 20-option limit or establish global probabilities.</dd>
+    <dt>Outcome</dt><dd>The host routes only on a finalized, audited Act with a single-agent set after required guards and valid calibration. Review asks one clarifying question or opens human review; Escalate follows the escalation path. An authorized <code>out_of_scope</code> disposition produces a polite handoff.</dd>
     <dt>Integration</dt><dd>The same spec powers <code>ClassifierBackend::Decision</code> in UAR, so the twin's sub-agents are ordinary UAR skills.</dd>
   </dl></div></template>
 
@@ -682,9 +808,9 @@ footer svg{width:18px;height:18px}
     <dt>Trigger</dt><dd>Every draft the twin produces, before the patient sees it.</dd>
     <dt>Spec</dt><dd><code>counselme.sufficiency.v3</code>, a Choice over <code>send · send_and_flag · hold_for_clinician · crisis_protocol</code>.</dd>
     <dt>Layers</dt><dd>Granite Guardian 4.1 criteria scores feed the Kev/LitJev head as state features. The criteria are: grounded in the counselor's knowledge base; consistent with prior guidance; <b>contains no new clinical directive</b> (medication, diagnosis, stopping treatment); and answers the question asked.</dd>
-    <dt>Outcome</dt><dd>A set of <code>{send}</code> sends the reply. A set that includes <code>send_and_flag</code> sends it and adds it to the digest. A set that includes <code>hold_for_clinician</code> holds it, sends the counselor a summary and pointer, and tells the patient when to expect a reply.</dd>
+    <dt>Outcome</dt><dd>The host follows the finalized native outcome. Escalate takes precedence; Review holds the draft for the counselor. Only an audited Act after valid calibration and required guards may release an eligible non-clinical reply with singleton <code>{send}</code> or <code>{send_and_flag}</code>. Any ambiguous set is held; a clinical directive requires human confirmation regardless of the answer value.</dd>
     <dt>Automation rate</dt><dd>Fix the recall floor on <code>hold_for_clinician</code> (≥0.95) first, then measure the automation rate it leaves. Kev-27B covered 84% of general decisions at a 5% error budget, and clinical budgets are tighter. The 90% target is a result to measure, not an input.</dd>
-    <dt>Labels</dt><dd>Every counselor approval, edit or rewrite of a held draft.</dd>
+    <dt>Labels</dt><dd>Representative independent adjudication across Act, Review and Escalate, including sampled sent replies, plus counselor approvals, edits and rewrites. Preserve sampling provenance and held-out partitions.</dd>
   </dl></div></template>
 
 <template id="frag-cm-04"><div classes="add swapin">
@@ -694,7 +820,7 @@ footer svg{width:18px;height:18px}
     <dt>Trigger</dt><dd>Session start (jurisdiction), and every draft (content).</dd>
     <dt>Spec</dt><dd>First a deterministic rule on the patient's state of residence and the counselor's license. Then <code>counselme.scope.v1</code>, a Noul: "this reply constitutes therapeutic communication or a therapeutic decision".</dd>
     <dt>Why</dt><dd>Illinois HB 1806 (Public Act 104-0054) bars AI from independent therapeutic decisions and from therapeutic communication with clients. An escalation gate does not cure that.</dd>
-    <dt>Outcome</dt><dd>In restricted jurisdictions the twin is limited to administrative and supplementary support, with explicit consent. Anything with P above the floor is held for the counselor.</dd>
+    <dt>Outcome</dt><dd>In restricted jurisdictions the twin is limited to administrative and supplementary support, with explicit consent. The versioned jurisdiction rule and calibrated Noul acceptance predicate determine Review or Escalate; a raw probability is not a recall-floor test.</dd>
     <dt>Human</dt><dd>Counsel reviews the jurisdiction table. It is a versioned artifact, not a model.</dd>
   </dl></div></template>
 
@@ -704,7 +830,7 @@ footer svg{width:18px;height:18px}
   <dl>
     <dt>Trigger</dt><dd>End of each counseling session, from the recorded transcript. This is the workflow Travis demonstrated with the Omi device.</dd>
     <dt>Spec</dt><dd>Extraction uses llguidance-constrained JSON on Qwen3.8 (<code>{action, owner, due, evidence_type}</code>). Each item then gets a Noul: "the patient committed to this".</dd>
-    <dt>Outcome</dt><dd>High-confidence items go straight onto the accountability plan. Low-confidence items appear in the counselor's session summary as "confirm?".</dd>
+    <dt>Outcome</dt><dd>Items propose changes to the accountability plan; clinical commitments require counselor confirmation through the host. Non-clinical reminders may automate only on a finalized Act after calibrated Noul acceptance, required guards and committed audit. Review presents "confirm?"; Escalate follows the human escalation path.</dd>
     <dt>Labels</dt><dd>Counselor confirmations and deletions.</dd>
   </dl></div></template>
 
@@ -715,7 +841,7 @@ footer svg{width:18px;height:18px}
     <dt>Spec</dt><dd><code>counselme.checkin.v1</code>, a Score over <code>same_day · two_days · one_week · next_session</code>.</dd>
     <dt>Inputs</dt><dd>Commitment type, the patient's response history, their stated preference, and CM-08 context.</dd>
     <dt>Layers</dt><dd>An encoder head on device. Kev-4B on desktop when the history is long.</dd>
-    <dt>Outcome</dt><dd>Always acts, and the patient can reschedule. Missed check-ins adjust the next decision.</dd>
+    <dt>Outcome</dt><dd>The Score retains its fractional expected value. The spec maps it to a timing action only after its calibrated acceptance predicate, required guards and committed audit permit Act. Review requests a timing choice; Escalate follows the human path. The patient can reschedule.</dd>
   </dl></div></template>
 
 <template id="frag-cm-07"><div classes="add swapin">
@@ -723,7 +849,7 @@ footer svg{width:18px;height:18px}
   <div class="tags"><span class="tag mod">moderate</span><span class="tag">desktop</span></div>
   <dl>
     <dt>Spec</dt><dd><code>counselme.done.v1</code>, a Noul: "the submitted evidence shows task X is complete". Granite Guardian groundedness gives a second opinion.</dd>
-    <dt>Outcome</dt><dd>High P checks the task off. Low P asks the patient "Did you finish this?". The system never marks a task failed on its own.</dd>
+    <dt>Outcome</dt><dd>Only a finalized, audited Act satisfying the calibrated Noul predicate and required guards may mark a non-clinical task complete. Review asks "Did you finish this?"; clinical state still requires host confirmation and Escalate follows the human path. A high raw probability alone grants no action.</dd>
     <dt>Human</dt><dd>The counselor sees completion evidence in the digest, just as Travis described ("put it in a Word document… push it into the app").</dd>
   </dl></div></template>
 
@@ -846,7 +972,7 @@ footer svg{width:18px;height:18px}
   <dl>
     <dt>Spec</dt><dd><code>pa.doctype.v1</code>, a Choice over <code>mri_report · radiology_other · pt_notes · injection_procedure · office_note · op_note · imaging_order · prior_denial · other</code>, on page text.</dd>
     <dt>Layers</dt><dd>A fine-tuned ModernBERT head (Laya zero-shot until labels exist). ~30 ms per page.</dd>
-    <dt>Outcome</dt><dd>Places pages on the evidence timeline. Low confidence goes to the coordinator's labeling queue.</dd>
+    <dt>Outcome</dt><dd>A finalized, audited Act may place document pages on the timeline as a non-clinical filing action after calibration and guards. Review goes to the coordinator; clinical evidence determinations still require confirmation. Escalate retains precedence.</dd>
   </dl></div></template>
 
 <template id="frag-pa-10"><div classes="add swapin">
@@ -935,7 +1061,7 @@ footer svg{width:18px;height:18px}
     <thead><tr><th>Skill (<code>name</code>)</th><th>Plugin</th><th>What it does</th><th>Tools it calls</th></tr></thead>
     <tbody>
       <tr><td><code>decision-spec-author</code></td><td>decide-foundation</td><td>Turns a described decision into a versioned DecisionSpec: options, primitive, recall floors, locality, tripwire pack</td><td><code>decide://specs</code>, <code>decide_choice</code> (dry run)</td></tr>
-      <tr><td><code>decision-calibrate</code></td><td>decide-foundation</td><td>Builds the labeled set from audit overrides, fits temperature and Mondrian conformal, and reports the automation rate the floors allow</td><td><code>decision_log_query</code>, <code>calibrate_fit</code></td></tr>
+      <tr><td><code>decision-calibrate</code></td><td>decide-foundation</td><td>Builds representative labels across all outcomes plus overrides, fits temperature and Mondrian conformal, and reports coverage assumptions and measured automation</td><td><code>decision_log_query</code>, <code>calibrate_fit</code></td></tr>
       <tr><td><code>decision-eval-harness</code></td><td>decide-foundation</td><td>Replays Jev traffic, Kev frozen suites or a golden set against the backends, and compares accuracy, Brier, ECE and latency</td><td><code>decide_batch</code></td></tr>
       <tr><td><code>guard-policy-author</code></td><td>decide-foundation</td><td>Writes Granite Guardian criteria and gpt-oss-safeguard policies, then tests them on examples</td><td><code>guard_check</code>, <code>sufficiency_check</code></td></tr>
       <tr><td><code>decision-audit-review</code></td><td>decide-foundation</td><td>Explains a decision, finds drift, and prepares an audit packet for counsel or compliance</td><td><code>decision_explain</code>, <code>decision_log_query</code></td></tr>
@@ -1062,7 +1188,7 @@ footer svg{width:18px;height:18px}
       <tr><td><b>4 · Accountability agent</b></td><td><span class="tag mod">moderate</span></td><td>llguidance extraction plus a Noul for each item</td><td>GLiNER spans; Granite groundedness</td><td>CM-05, CM-06, CM-07</td></tr>
       <tr><td><b>5 · Prior authorization</b></td><td><span class="tag crit">critical</span></td><td>Rules, criteria decomposition, a Noul per criterion (LitJev/Kev-27B) and aggregation in code</td><td>MedGemma 27B for extraction only (license)</td><td>PA-01 to PA-11</td></tr>
       <tr><td><b>6 · Sports / athletes</b></td><td><span class="tag mod">fairness</span></td><td>Julia or Laya for feedback; Kev Score for fit</td><td>Gradient boosting for NIL value</td><td>Future specs; never automate recruiting decisions about minors</td></tr>
-      <tr><td><b>7 · Verification / ideation</b></td><td><span class="tag low">low</span></td><td>Granite Guardian 4.1 8B as verifier</td><td>CLM-8B for ranking candidates</td><td><code>decide-guard</code>; UAR graph loops</td></tr>
+      <tr><td><b>7 · Verification / ideation</b></td><td><span class="tag low">low</span></td><td>Granite Guardian 4.1 8B as verifier</td><td>CLM-8B research only; deferred</td><td><code>decide-guard</code>; UAR graph loops</td></tr>
     </tbody></table></div>
 </section>
 
@@ -1076,7 +1202,7 @@ footer svg{width:18px;height:18px}
       <tr><td><b>Calibration</b></td><td>RLCD, calibrated out of the box (vendor claim, unverified)</td><td>You fit it: temperature plus conformal on your own labels, versioned for each counselor and clinic</td></tr>
       <tr><td><b>Accuracy</b></td><td>Leads on knowledge, policy and many-label tasks (MMLU 0.90 vs Kev-9B 0.74)</td><td>Matches Jev on few-option tasks; close the gap with fine-tuning and hierarchical specs</td></tr>
       <tr><td><b>Privacy / HIPAA</b></td><td>PHI leaves your perimeter; no on-prem option or BAA information found</td><td>Data stays on the device or on your infrastructure, which is the architectural requirement</td></tr>
-      <tr><td><b>Compatibility</b></td><td>TypeSafe SDKs</td><td><code>decide-schema</code> speaks <code>/v1/systemone</code>, so you can A/B test against Jev on non-PHI traffic</td></tr>
+      <tr><td><b>Compatibility</b></td><td>TypeSafe SDKs</td><td>The proxy serves <code>/v1/systemone</code> exactly and can call Jev itself for non-PHI traffic, so it is a drop-in replacement with a local-first policy</td></tr>
     </tbody></table></div>
 </section>
 
@@ -1086,6 +1212,7 @@ footer svg{width:18px;height:18px}
     <div class="card"><h4>Illinois HB 1806 <span class="tag crit">CounselMe</span></h4><p>Public Act 104-0054, effective 4 August 2025, bars AI from independent therapeutic decisions and from therapeutic communication with clients, with penalties of up to $10,000 per violation. The escalation gate doesn't cure this. Geofence Illinois, or limit the product there to supplementary support with consent (CM-04). Get counsel's opinion, and track similar laws in other states.</p></div>
     <div class="card"><h4>FDA CDS guidance, Jan 2026 <span class="tag crit">both</span></h4><p>Non-device CDS supports a clinician "without replacing or directing" their judgment. Matching records to guidelines is a recognized pattern, and interpreting repeated physiologic measurements is likely a device function. Prior-auth stays transparent and proposal-only. CounselMe wellness signals stay wellness-framed (CM-08).</p></div>
     <div class="card"><h4>MedGemma license <span class="tag mod">prior-auth</span></h4><p>The HAI-DEF Prohibited Use Policy bans automated decisions in healthcare and insurance. MedGemma is allowed as an extractor whose output a person reviews, and never as the model that decides met/gap/void.</p></div>
+    <div class="card"><h4>Hosted routing <span class="tag crit">both</span></h4><p>No applicable BAA is established by this plan. PHI and unknown data remain excluded from hosted adapters. Explicit trusted grants authorize non-PHI destinations; a classifier only vetoes. Alibaba Token Plan and Coding Plan prohibit custom application backend use, so a permitted API service or explicit provider authorization is required. Provider region labels do not prove inference residency.</p></div>
     <div class="card"><h4>HIPAA, BAA and Texas <span class="tag mod">prior-auth</span></h4><p>Production PHI inference is disabled in the workbench today until there is a BAA provider. Self-hosting removes that dependency for decisions. The spec already tracks Texas SB 1188 and TRAIGA AI-disclosure reporting, so each decision's <code>audit_id</code> should feed those reports.</p></div>
   </div>
   <div class="note crit" style="margin-top:14px"><p><b>Not legal advice.</b> The Illinois statute, the FDA's device boundary and the MedGemma license each need counsel's reading for the specific product and jurisdictions.</p></div>
@@ -1094,11 +1221,12 @@ footer svg{width:18px;height:18px}
 <section class="block" id="roadmap">
   <div class="sechead"><p class="eyebrow">14 · Decide</p><h2>Roadmap</h2><p class="lede">Ship the infrastructure where the risk is low (The Boss, UAR routing), build labels where the risk is high (prior-auth, CounselMe), and only then turn on automated outcomes.</p></div>
   <div class="phases">
-    <div class="phase"><div class="when"><b>Phase 0</b>2 weeks</div><ul><li>Stand up Kev-4B and <code>laya-rust</code> locally. Replay Jev traffic or TypeSafe's public evals to measure agreement and latency on the M-series Mac and a Windows CUDA box.</li><li>Scaffold the <code>knowme-decide</code> workspace: <code>decide-core</code>, <code>decide-schema</code>, <code>decide-tripwire</code>, <code>decide-calibrate</code>, <code>decide-mcp</code>.</li><li>Settle the rmcp (3.1 vs 3.4) and candle (0.7 vs 0.11) pins.</li></ul></div>
-    <div class="phase"><div class="when"><b>Phase 1</b>The Boss sidecar</div><ul><li>Add <code>knowme-decide</code> to the integration pins, <code>BUNDLED_TOOLS</code> and the <code>@prometheus/decide</code> preset (the <code>prometheus-005</code> change).</li><li>Build <code>DecideSidecarService</code> with READY:{port}, plus the operator panel.</li><li>Publish the <code>knowme-decisions</code> marketplace with <code>decide-foundation</code>, and add a marketplace.json reader to The Boss.</li></ul></div>
+    <div class="phase"><div class="when"><b>Phase 0</b>2 weeks</div><ul><li>Run M0 Spike F: Julia graph/tokenizer parity, native ONNX packaging and measured memory on desktop, Android and iOS. Record installed size and cold/warm latency; retain optional Kev/Laya exploration separately.</li><li>Scaffold the <code>knowme-decide</code> workspace: <code>decide-core</code>, <code>decide-schema</code>, <code>decide-tripwire</code>, <code>decide-calibrate</code>, <code>decide-mcp</code>.</li><li>Verify proposed rmcp 3.5.0 and candle pins against host compatibility. Resolve provider entitlement, complete candidate scoring and DeltaNet feasibility before committing to adapters.</li></ul></div>
+    <div class="phase"><div class="when"><b>Phase 1</b>Proxy + The Boss</div><ul><li>Build <code>decide-server</code>: Jev-compatible <code>/v1/systemone</code>, <code>/v1/decide</code>, SSE, and MCP 2026-07-28 at <code>/mcp</code> with rmcp 3.5.0. First prove bundled Julia ONNX plus explicitly selected, permitted Jev on approved non-sensitive fixtures, across native HTTP, Jev compatibility and MCP. Keep outcomes conservative until guards, calibration and audit gates pass; add other backends afterward. Complete M4 fresh-install offline and native acceptance gates on Windows, macOS, Linux, Android and iOS before advertising the built-in release.</li><li>Enforce trusted grants before the first external dispatch; add the model veto and learned ranking later in M7b, with real calibration positives and route-level evaluation.</li><li>Add <code>knowme-decide</code> to the integration pins, <code>BUNDLED_TOOLS</code> and the <code>@prometheus/decide</code> preset (the <code>prometheus-005</code> change).</li><li>Build <code>DecideSidecarService</code> with READY:{port}, plus the operator panel.</li><li>Publish the <code>knowme-decisions</code> marketplace with <code>decide-foundation</code>, and add a marketplace.json reader to The Boss.</li></ul></div>
     <div class="phase"><div class="when"><b>Phase 2</b>UAR routing</div><ul><li>Add <code>ClassifierBackend::Decision</code>, the <code>RouterNode</code> swap and the <code>ModelRouter</code> task type.</li><li>Write a new openspec change for ML guards and decision-model Cedar context, replacing the keyword heuristic.</li><li>Port LitJev to the candle-vllm fork with the DeltaNet state snapshot, and validate against Kev-27B on Kev's frozen suites.</li></ul></div>
     <div class="phase"><div class="when"><b>Phase 3</b>Prior-auth shadow</div><ul><li>Build the <code>aso-decide</code> kernel and run PA-03, PA-06 and PA-07 in shadow mode. Proposals are logged but not shown, then compared with coordinator and surgeon actions.</li><li>Encode 3–5 spine policies (lumbar fusion first). Label 100+ chart and criteria pairs with the staff.</li><li>Fit conformal floors on void and gap, then show proposals.</li></ul></div>
-    <div class="phase"><div class="when"><b>Phase 4</b>CounselMe pilot</div><ul><li>Label 500–2,000 examples with the counselor (sufficient, escalate, crisis). Oversample crisis examples using synthetic data the clinician reviews.</li><li>Ship the tripwire pack and crisis classifier first. Run CM-03 with every draft held for the counselor until the measured automation rate at ≥0.95 recall is acceptable.</li><li>Legal review: Illinois, other states, HIPAA BAA for any GPU host.</li></ul></div>
+    <div class="phase"><div class="when"><b>Phase 3b</b>Browser tier</div><ul><li>Build <code>decide-wasm</code> with ONNX Runtime Web and a PGlite audit sink, and ship it in prior-auth web and KnowMe web with a separate calibration artifact (M9b). DeviceOnly disables synchronization; any later audit/label transfer requires its own scoped host grant.</li></ul></div>
+    <div class="phase"><div class="when"><b>Phase 4</b>CounselMe pilot</div><ul><li>Label 500–2,000 examples with the counselor (sufficient, escalate, crisis). Use reviewed synthetic examples for training only; calibration and held-out evaluation require representative real labels across outcomes.</li><li>Ship the tripwire pack and crisis classifier first. Run CM-03 with every draft held for the counselor until the measured automation rate at ≥0.95 recall is acceptable.</li><li>Legal review: Illinois, other states, HIPAA BAA for any GPU host.</li></ul></div>
   </div>
 </section>
 
@@ -1109,7 +1237,7 @@ footer svg{width:18px;height:18px}
       <li>Nearly every figure for the Jev-style open models is self-reported, days old, and measured against Jev reference values rather than a new head-to-head run. MedGemma 27B hardware needs are estimates. Guard-model leads come from the vendors.</li>
       <li>Crisis-detection performance depends on fine-tuning and data, not on which model you pick. No model detects suicide risk until it has been validated on your population with clinician-labeled data.</li>
       <li>The repo findings reflect a read of each codebase on 27 September 2026. The crate names, tool names and spec IDs in this report are proposals and don't exist yet.</li>
-      <li>The example numbers in the JSON result and the sequence diagram are illustrative.</li>
+      <li>The example numbers in the semantic result and sequence diagram are illustrative. The published IPFS snapshot predates this local built-in-default update; it has not been republished. Publication of this architecture document does not establish runtime validation; implementation and acceptance gates remain pending.</li>
     </ul>
   </div>
   <h3>Sources</h3>
@@ -1119,7 +1247,7 @@ footer svg{width:18px;height:18px}
     <li><a href="https://www.marktechpost.com/2026/09/19/typesafe-ai-releases-jev/">MarkTechPost — TypeSafe AI releases Jev</a></li>
     <li><a href="https://systemonemodels.org/examples/alternatives/">systemonemodels.org — Alternatives</a></li>
     <li><a href="https://github.com/jaredpalmer/kev">Kev repository</a> · <a href="https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-27b.md">Kev-27B card</a> · <a href="https://github.com/jaredpalmer/kev/blob/main/docs/model-cards/kev-9b.md">Kev-9B card</a></li>
-    <li><a href="https://www.marktechpost.com/2026/09/26/supersonic-labs-releases-julia-1-a-144-3m-parameter-open-decision-model-that-runs-on-a-cpu/">Julia 1 release</a></li>
+    <li><a href="https://huggingface.co/SupersonicLabs/Julia-1">Julia 1 model card</a> · <a href="https://huggingface.co/SupersonicLabs/Julia-1-ONNX">official ONNX export</a> · <a href="https://supersoniclabs.ia.br/julia-1/">author deployment measurements</a> · <a href="https://onnxruntime.ai/docs/tutorials/mobile/">ONNX Runtime mobile deployment</a></li>
     <li><a href="https://github.com/aovestdipaperino/laya-rust">laya-rust (candle port)</a></li>
     <li><a href="https://huggingface.co/Contrastive-LM/CLM-v0.1-8B">CLM-8B model card</a></li>
     <li><a href="https://github.com/fatwang2/awesome-jev">awesome-jev</a></li>
@@ -1137,6 +1265,14 @@ footer svg{width:18px;height:18px}
     <li><a href="https://about.citiprogram.org/blog/clinical-decision-support-compliance-fdas-2026-expectations/">CITI — FDA 2026 CDS expectations</a></li>
     <li><a href="https://arxiv.org/abs/2604.09937">Prior-auth benchmark (arXiv 2604.09937)</a> · <a href="https://arxiv.org/pdf/2605.16679">arXiv 2605.16679</a></li>
     <li><a href="https://agentskills.io/specification">AgentSkills.io specification</a></li>
+    <li><a href="https://docs.typesafe.ai/api">TypeSafe API reference</a></li>
+    <li><a href="https://www.alibabacloud.com/help/en/model-studio/more-tools">Alibaba Cloud — subscription usage restrictions</a></li>
+    <li><a href="https://arxiv.org/html/2107.07511v6">Conformal prediction — assumptions and class-conditional coverage</a></li>
+    <li><a href="https://www.reddit.com/r/LLMDevs/comments/1wko2e5/i_reviewed_287_opensource_jev_projects_here_are/">Jev project review</a> · <a href="https://github.com/itsmostafa/system-one-connector">System One Connector</a> · <a href="https://github.com/jkudish/jev-mcp">jev-mcp</a></li>
+    <li><a href="https://github.com/mizorewww/laya-mlx">laya-mlx</a> · <a href="https://github.com/NandhaKishorM/laya">Laya upstream (laya-serve)</a></li>
+    <li>ambuj singh, "China Just Dropped Laya MLX…", <i>Generative AI</i>, Sep 2026</li>
+    <li><a href="https://github.com/vishalmysore/layaForWorkflows">layaForWorkflows</a> · <a href="https://jev001.org/projects/">Jev &amp; Laya project index</a></li>
+    <li><a href="https://modelcontextprotocol.io/specification/2026-07-28/changelog">MCP 2026-07-28 changelog</a> · <a href="https://crates.io/crates/rmcp">rmcp 3.5.0</a></li>
     <li><a href="https://code.claude.com/docs/en/plugin-marketplaces">Claude Code — plugin marketplaces</a></li>
     <li>Repos read on the owner's Mac: <code>prometheus/universal-agent-runtime</code>, <code>know-me/know-me-system</code> (brand: <code>docs/knowme-ui-ux-standard.md</code>), <code>prometheus/the-boss</code>, <code>TribeHealth/kevin/prior-auth</code></li>
   </ol>
@@ -1145,7 +1281,7 @@ footer svg{width:18px;height:18px}
 <footer>
   <svg viewBox="0 0 100 130" aria-hidden="true"><rect x="0" y="0" width="20" height="124" rx="10" fill="currentColor"/><path d="M 16,62 C 26,52 44,32 62,18 C 72,10 80,8 84,14 C 86,18 82,24 76,28 C 60,40 40,56 28,66 C 22,70 18,68 16,64 Z" fill="currentColor"/><path d="M 16,62 C 26,72 44,92 62,106 C 72,114 80,116 84,110 C 86,106 82,100 76,96 C 60,84 40,68 28,58 C 22,54 18,56 16,60 Z" fill="currentColor"/><circle cx="18" cy="62" r="10" fill="var(--fg-faint)"/></svg>
   <span>KnowMe, LLC · know-me.tools · AI that understands you.</span>
-  <span>HTMX 2.0.11 · Alpine 3.17.4 · class-tools</span>
+  <span>HTMX 2.0.11 · Alpine 3.17.4 · class-tools · updated 28 Sep 2026</span>
 </footer>
 </main>
 </div>
@@ -1197,14 +1333,43 @@ document.addEventListener('alpine:init', function () {
     };
   });
 
+  Alpine.data('proxy', function () {
+    var S = {
+      local: { nodes: ['c2','srv','gate','router','onnx'], edges: ['c2','s-g','g-r','r-d'], blocked: true,
+               outcome: '<b>Fresh install · Julia ONNX.</b> A supported four-option decision runs from the verified bundle offline, without a key or configuration file. No valid signed calibration for this spec means <code>Review</code>; tripwires or required guards may still require <code>Escalate</code>. Optional hosted credentials do not change this default.' },
+      phi:  { nodes: ['c3','srv','gate','router','cv27'], edges: ['c3','s-g','g-r','r-c'], blocked: true,
+              outcome: '<b>Optional clinic GPU · Qwen3.8-27B.</b> Prior-auth criterion "≥6 weeks of PT". The spec is tagged <code>phi</code> and <code>clinical</code>, and the authenticated host explicitly permits this clinic endpoint before any model runs. Hosted Jev and Qwen are out of reach. The router sends it to the LitJev head on the clinic GPU, and the outcome is <code>Review</code> (a proposal).' },
+      many: { nodes: ['c1','srv','gate','router','jev'], edges: ['c1','s-g','g-r','r-h'], blocked: false,
+              outcome: '<b>Hosted Jev.</b> A public product-catalog question with 40 options, sent to <code>/v1/systemone</code> with <code>model: jev-latest</code>. An available TypeSafe key, trusted catalog provenance and an authenticated host grant already authorize this explicitly selected Jev request; the local sensitivity check does not veto that permission. The bundled Julia path cannot handle 40 options. Without this explicit remote selection or an authorized routing policy, it would return unsupported/Review rather than silently call Jev.' },
+      zh:   { nodes: ['c2','srv','gate','router','mlx'], edges: ['c2','s-g','g-r','r-d'], blocked: true,
+              outcome: '<b>Optional on-device extension · laya-mlx multilingual.</b> A Chinese-language personal message through MCP on a Mac. The data class is <code>{personal}</code>, so the ceiling is <code>device</code>. The script is non-Latin, so the router picks the multilingual checkpoint on MLX (7.4 ms p50 reported by the author).' },
+      web:  { nodes: ['c4','browser'], edges: ['c4'], blocked: false,
+              outcome: '<b>Separate optional browser profile.</b> Prior-auth web classifies an uploaded page (PA-11) with <code>decide-wasm</code> and ONNX Runtime Web. The audit record and the coordinator confirmation stay in local PGlite. DeviceOnly makes no off-device calls, including synchronization; clinic sync would require a separate host grant and a different data-transfer policy.' }
+    };
+    return {
+      active: 'local',
+      scenarios: [
+        { id: 'local', label: 'Fresh install · offline' },
+        { id: 'phi', label: 'PHI criterion (prior-auth)' },
+        { id: 'many', label: 'Non-PHI, 40 options' },
+        { id: 'zh', label: 'Chinese message on a Mac' },
+        { id: 'web', label: 'Browser, offline' }
+      ],
+      current: function () { return S[this.active]; },
+      blocked: function () { return S[this.active].blocked; },
+      n: function (id) { return S[this.active].nodes.indexOf(id) > -1 ? 'on' : 'dim'; },
+      e: function (id) { return S[this.active].edges.indexOf(id) > -1 ? 'on flow' : 'dim'; }
+    };
+  });
+
   Alpine.data('cascade', function () {
     var S = {
       routine:   { nodes: ['in','trip','enc','guard','cal','act'], edges: ['in-trip','trip-enc','enc-guard','guard-cal','cal-bus','cal-act'],
-                   outcome: '<b>Act · send.</b> "Can we move Thursday\'s check-in?" The encoder picks <code>scheduling_admin</code> at p=0.97, which is above τ, so the LLM head is skipped. The guard finds no clinical content and the conformal set is <code>{send}</code>. Total ≈ 60 ms on device.' },
+                   outcome: '<b>Act · send.</b> "Can we move Thursday\'s check-in?" The encoder picks <code>scheduling_admin</code> at p=0.97, which is above τ, so the LLM head is skipped. The required guard passes, the valid calibration gives <code>{send}</code>, and the host commits the audit record before acting. The 60 ms total is an illustrative target.' },
       ambiguous: { nodes: ['in','trip','enc','llm','guard','cal','rev'], edges: ['in-trip','trip-enc','enc-llm','llm-guard','guard-cal','cal-bus','cal-rev'],
                    outcome: '<b>Review · hold for clinician.</b> A sleep-aid interaction question. The encoder is unsure, so the LitJev head runs. Granite flags a possible new clinical directive. The set is <code>{send_and_flag, hold_for_clinician}</code>, so the reply is held and the counselor gets a summary and pointer.' },
       crisis:    { nodes: ['in','trip','esc'], edges: ['in-trip','trip-esc'],
-                   outcome: '<b>Escalate · crisis protocol.</b> Explicit means-and-plan language matches a rule in the clinician-owned tripwire pack in under 1 ms. The patient sees 988 and the safety plan, and the counselor is alerted. The models still run afterwards, only to log the case.' },
+                   outcome: '<b>Escalate · crisis protocol.</b> Explicit means-and-plan language matches a rule in the clinician-owned tripwire pack in under 1 ms. The patient sees 988 and the safety plan, and the counselor is alerted. No model is required to deliver the escalation. The host records the event; if storage fails, it delivers urgent escalation with explicit audit failure and no fabricated receipt.' },
       pa:        { nodes: ['in','trip','enc','llm','guard','cal','rev'], edges: ['in-trip','trip-enc','enc-llm','llm-guard','guard-cal','cal-bus','cal-rev'],
                    outcome: '<b>Review · proposal.</b> Prior-auth criterion "≥6 weeks of conservative care including PT". The encoder filters PT notes, the 27B head proposes <code>met</code> citing two pages, and the guard confirms the citation supports it. Clinical state is always Review: the coordinator confirms through <code>evidence_assembly</code>.' }
     };

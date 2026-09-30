@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "1",
+  "generatedBy": "kbd-runtime",
+  "projectionContractVersion": 2,
+  "sourceRevision": 91,
+  "derivedRevision": 91,
+  "frontier": {
+    "06580634-886f-4c83-8992-e14ba116c89a": 91
+  },
+  "conflictCount": 0,
+  "updatedAt": "2026-09-30T06:26:19.565535Z",
+  "cursor": [
+    "m0-bootstrap",
+    "execute",
+    "m0-reconcile-pending-design",
+    "5"
+  ],
+  "root": {
+    "type": "phase",
+    "id": "b2e307a2-c44b-41b3-b951-f2082da8b121",
+    "status": "ready",
+    "progress": {
+      "done": 0,
+      "total": 9
+    },
+    "children": [
+      {
+        "type": "phase",
+        "id": "m0-bootstrap",
+        "canonicalId": "m0-bootstrap",
+        "status": "PENDING",
+        "progress": {
+          "done": 0,
+          "total": 9
+        },
+        "children": [
+          {
+            "type": "change",
+            "id": "m0-reconcile-pending-design",
+            "status": "IN_PROGRESS",
+            "progress": {
+              "done": 4,
+              "total": 10
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-adrs-001-003",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 6
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-workspace-skeleton-ci",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 8
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-spike-f-julia-onnx",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 7
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-spike-c-deltanet-fork",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 5
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-spike-ad-local-hosting",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 5
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-spike-e-hosted-scoring",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 6
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-spike-b-eval-replay",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 4
+            }
+          },
+          {
+            "type": "change",
+            "id": "m0-adrs-004-012",
+            "status": "PENDING",
+            "progress": {
+              "done": 0,
+              "total": 5
+            }
+          }
+        ],
+        "annotations": []
+      }
+    ],
+    "annotations": []
+  }
+}

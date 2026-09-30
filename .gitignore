@@ -122,4 +122,10 @@ __pycache__/
 
 # Private content: never committed
 /docs/sessions/
+/.opencode/opencode-loop/
+/.playwright-mcp/
 # <<< knowme-project-setup <<<
+
+# KBD runtime-local files (caches with local paths, locks)
+/.kbd-orchestrator/model-preflight.json
+.kbd-orchestrator/**/*.lock

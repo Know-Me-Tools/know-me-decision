@@ -54,6 +54,7 @@ write(
 const research = [
   ['jev-escalation-viability.md', 1, 'Why not Jev'],
   ['open-decision-models-2026-09.md', 2, 'Open decision models (Sep 2026)'],
+  ['decision-proxy-options-2026-09.md', 3, 'Decision proxy options (Sep 2026)'],
 ];
 for (const [file, position, label] of research) {
   write(

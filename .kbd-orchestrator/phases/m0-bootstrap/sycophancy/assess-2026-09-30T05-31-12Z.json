@@ -1,0 +1,1 @@
+{"tool":"detect_sycophancy","evaluation_domain":"project_assessment","strictness":"standard","sycophancy_score":0.0,"classifications":[],"correction_mandatory":false,"executed_at":"2026-09-30T05:31:12.982565Z","delta_summary":"No changes needed: score below clean threshold and no sycophancy patterns were detected."}

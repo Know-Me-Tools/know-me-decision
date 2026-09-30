@@ -2,7 +2,11 @@
 
 *Deep-research report, 27 September 2026. Benchmark figures for the open models are mostly self-reported and only days or weeks old; see [Caveats](#caveats).*
 
-You can replace Jev with open-weight models on your own hardware, but not with one model. No open project reproduces Jev's RLCD training. The practical replacement has five layers:
+> **Update, 28 Sep 2026.** The normative implementation contract is [`../PLAYBOOK.md`](../PLAYBOOK.md); see [`decision-proxy-options-2026-09.md`](decision-proxy-options-2026-09.md) for later feasibility findings and corrections. Laya MLX is an independent port of the original checkpoints with author-reported Apple Silicon timings, not a new Chinese checkpoint. Upstream Laya provides a Jev-compatible server. The recorded Qwen Token Plan probe proves connectivity only: Alibaba’s documented restrictions prohibit application backends on that plan, and top-five logprobs do not guarantee complete candidate scores. An authorized API and verified scoring contract are prerequisites. Browser execution and MCP 2026-07-28/rmcp 3.5.0 are proposed integration targets, not certified KnowMe capabilities.
+
+**Built-in selection (28 September):** Julia 1 embedded through Rust and native ONNX Runtime is the planned zero-configuration desktop/mobile default. Bundle its model, tokenizer and runtime before first launch; Jev is an optional TypeSafe-key-backed provider, with explicit host authorization. See the [baseline contract and platform gates](decision-proxy-options-2026-09.md#built-in-baseline-julia-1-through-rust-and-onnx-runtime). CLM and its Rust port are deferred. Native packaging, performance and quality are not yet certified.
+
+The broader optional deployment can replace more hosted workloads with open-weight models on your own hardware, but not with one model. No open project reproduces Jev's RLCD training. The practical replacement has five layers:
 
 - **(a)** a small encoder decision model for routing and triage
 - **(b)** a Qwen-based Jev-style decision head (Kev, or your LitJev port on Qwen3.8-27B) for harder typed decisions
@@ -10,14 +14,14 @@ You can replace Jev with open-weight models on your own hardware, but not with o
 - **(d)** conformal calibration fitted on your own labeled data
 - **(e)** deterministic crisis tripwires
 
-Only (d) and (e) give guarantees you can defend for the counseling and prior-auth use cases.
+Calibration provides statistical coverage only under its sampling assumptions; tripwires enforce configured rules, not exhaustive crisis detection. Neither establishes clinical safety or legal compliance by itself. Required guards, trusted-host action control, representative human evaluation and the playbook’s clinical gates remain necessary.
 
 ## TL;DR
 
-- **Best open "Jev-shaped" models right now:**
+- **Selected baseline and optional research candidates:**
   - **Kev** (Apache-2.0; Qwen3.5/3.8 bases at 0.8B/4B/9B/27B; serves TypeSafe's `/v1/systemone` schema; publishes Brier scores against Jev) for hard decisions.
   - **Julia 1** (144.3M, Apache-2.0, ~33 ms median per decision on an Apple M4) and **Laya** (ModernBERT-large 421M, Apache-2.0, pure-Rust candle port) for on-device routing.
-  - **CLM-8B** (Stanford/NVIDIA, Apache-2.0) for scoring actions and verifying agent outputs.
+  - **CLM-8B:** retained as research only; integration and Rust port are deferred.
   - All of these are days to weeks old, their benchmarks are self-reported, and none reproduces RLCD.
 - **Safety and verification layer:**
   - **Qwen3Guard** (0.6B/4B/8B, including a streaming token-level variant with a "Suicide & Self-Harm" category).
@@ -28,7 +32,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
 - **Architecture verdict:**
   - The counseling escalation gate and prior-auth decisions are safety-critical and regulated. Illinois HB 1806 "prohibits anyone from using AI to provide mental health and therapeutic decision-making" (IDFPR), and the FDA's January 2026 CDS guidance applies to prior auth.
   - Build both as approve-or-escalate systems, never deny or treat autonomously.
-  - Use conformal thresholds that guarantee recall on the escalation class, with rule-based crisis tripwires in front of any model.
+  - Use class-conditional conformal thresholds with explicit sampling assumptions and independent recall evaluation, with rule-based crisis tripwires before any model. Do not equate prediction-set coverage with error rates among automated decisions.
 
 ## 1. The Jev baseline and what "replacing" it actually means
 
@@ -40,7 +44,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
   - The headline "193.6× faster / 444.6× cheaper" numbers come from TypeSafe's own workflow evals, whose reference answers average two frontier models. TypeSafe says it "cannot prove the price is unsubsidized."
   - "Zero hallucinations" means only that the output always matches the schema, not that it is correct.
 - **No open project copies Jev.** The independent tracker systemonemodels.org puts it plainly: "There is no drop-in replacement for Jev… None of them is trained the way Jev is." RLCD "has never been described in enough detail to copy." Several open projects explicitly disclaim calibration; openjev-sglang says its probabilities "are not calibrated estimates of correctness."
-- **What this means for you:** Jev's actual advantage is calibration out of the box on unseen tasks. The interface (typed options, one forward pass, a probability for each option) is easy to copy. With a HIPAA-bound, on-device architecture you have to rebuild calibration from your own labeled data. That is also the approach you should trust most for clinical decisions, even if Jev were available on-prem.
+- **What this means for you:** Jev’s claimed advantage is calibration on unseen tasks; it still requires validation on the intended population. The interface (typed options, one forward pass, a probability for each option) is easy to copy. With a HIPAA-bound, on-device architecture you have to rebuild calibration from your own labeled data. That is also the approach you should trust most for clinical decisions, even if Jev were available on-prem.
 
 ## 2. Open "System One" / Jev-like models (all released 15–27 Sep 2026)
 
@@ -49,7 +53,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
 | **Kev** (Jared Palmer) | Qwen3.5/3.8 at 0.8B, 4B, 9B, 27B (LoRA + pointer head, frozen backbone) | Apache-2.0, training code and eval data included | Kev-4B ~495 ms for 3 questions on an M5 (bf16); Kev-9B needs ~19–22 GB; Kev-27B ~55 GB (80 GB GPU) | Choice/Score/Noul, TypeSafe wire format | Kev-27B locked OOD: 0.896 accuracy, Brier 0.160, "coverage at ≤5% error" 0.835. Kev-9B ECE 0.106→0.042 after temperature fitting. Confident errors 4.0% vs. Jev's 3.7% | Python server; the Qwen3.8 hybrid (Gated DeltaNet) backbone is slow on Mac without MLX |
 | **Julia 1** (Supersonic Labs) | mmBERT-small, 144.3M | Apache-2.0 | 33.15 ms median on Apple M4; 203 ms and 393 MB RSS on a Samsung tablet CPU (ONNX Runtime); WebGPU build | 2–20 options, full softmax | None published beyond accuracy. 73.15% on Typed Decisions vs. Jev's 72.70% reference; **64% vs. 87% on Banking77 (72 labels)** | ONNX; 8,192-token runtime, benchmarked at 1,024 |
 | **Laya** (Convai Innovations) | ModernBERT-large 421M (EN); mmBERT-base 322M (multilingual) | Apache-2.0 | 32.8–39.5 ms on a T4; 193–464 ms on CPU | Choice/Score/Noul | ECE 0.466 as shipped → 0.081 after temperature fitting | **Pure-Rust candle port (`laya-rust`): CPU/Metal/CUDA**, with a vendored fix for candle's ModernBERT f16 mask bug |
-| **CLM-8B** (Stanford + NVIDIA) | Frozen Qwen3-8B + two 20M-parameter heads (bi-encoder, InfoNCE) | Apache-2.0 (code, weights, data) | 28 ms per new state on an RTX 4090; Linux + NVIDIA; "13× faster than Jev" at ~1k candidates | Scores each candidate action | "None claimed" (optional temperature only) | Qwen3-8B embeddings via vLLM pooling |
+| **CLM-8B** (Stanford + NVIDIA) | Frozen Qwen3-8B + two 20M-parameter heads (bi-encoder, InfoNCE) | Apache-2.0 code/weights; verify dataset terms separately | 28 ms per new state on an RTX 4090; Linux + NVIDIA; "13× faster than Jev" at ~1k candidates | Scores each candidate action | "None claimed" (optional temperature only) | Qwen3-8B embeddings via vLLM pooling; implementation deferred |
 | **Decider** (Mapika) | Qwen3.5-2B-Base fine-tune | Apache-2.0 | Local GPU | Choice/Score/Noul, TypeSafe wire format | Claimed, not measured | — |
 | **Von** | ModernBERT 395M | Apache-2.0 | ~18 ms on GPU; CPU/MPS/OpenVINO | Choice/Score/Noul | "Near-ideal" ECE claimed, no figure; 72.0% vs. Jev's 96.6% on its own 49-task suite | — |
 | **openJev-verdict-2.0** | 151M, non-autoregressive | Open | — | Typed | 77.10% accuracy, Brier 0.0636, ECE 0.0144 on typed-decisions (self-reported) | — |
@@ -124,7 +128,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
 
 1. **One-pass option scoring.** Prefill the state once, then read the next-token logits restricted to the option tokens. This is how litjev, mini-jev, jevfire and Granite Guardian's yes/no scoring work.
    - For several questions, fork the KV cache per question. jev-on-a-laptop "broadcasts the KV cache across one batch row per schema field."
-   - For multi-token labels, use single-letter aliases or score the whole sequence's log-probability.
+   - For multi-token labels, use single-letter aliases or score the whole sequence's log-probability. Verify all candidate scores are available under the documented transformation: top-k token lists may omit options even when there are fewer than k options. Never invent floor mass for missing scores; an incomplete scorer cannot support native calibrated `Act`.
 2. **Constrained decoding** for the fields you do generate (action items, missing-evidence lists).
    - XGrammar is the default in vLLM and SGLang.
    - llguidance is written in Rust and works in llama.cpp (`-DLLAMA_LLGUIDANCE=ON`) and SGLang (`--grammar-backend llguidance`). Both add roughly 40–50 µs per token.
@@ -132,15 +136,15 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
    - Constrained decoding guarantees valid structure. It says nothing about calibration.
 3. **Calibration.**
    - Temperature scaling fixes average overconfidence (Laya's ECE went from 0.466 to 0.081, and Kev fits a temperature for each checkpoint). It doesn't guarantee recall on rare classes.
-   - For the escalation and crisis classes, use split conformal or conformal risk control. Calibrate on held-out positives so that recall on "must escalate" meets a target you set (e.g., ≥0.98).
-   - Caveat: standard split conformal can show "systematically worse performance on the most safety-critical examples" when subgroups shift. Use class-conditional (Mondrian) or conditional-conformal variants, and recalibrate for each counselor and population.
-4. **Fine-tuning small models on labeled decisions.** Options include SetFit (a few dozen labels, CPU), a full ModernBERT fine-tune, or LoRA plus a head on Qwen following Kev's recipe. The counselor's transaction log is the labeling pipeline, so capture counselor overrides as labels from day one.
+   - For escalation and crisis classes, evaluate class-conditional split conformal or a specified risk-control method on held-out real labels with a predeclared target (e.g., ≥0.98). A minimum `ceil(1/alpha) - 1` positives permits the finite-sample quantile; it does not by itself prove deployment recall, clinical safety or selective error among `Act` decisions.
+   - Caveat: standard split conformal can show "systematically worse performance on the most safety-critical examples" when subgroups shift. State the exchangeability assumptions and evaluate each required population; pooled fallback cannot claim the same subgroup guarantee. Bind artifacts to model revision, tokenizer, prompt, quantization, score transformation and routing policy, and evaluate the complete routed cascade.
+4. **Fine-tuning small models on labeled decisions.** Options include SetFit (a few dozen labels, CPU), a full ModernBERT fine-tune, or LoRA plus a head on Qwen following Kev's recipe. Capture counselor overrides from day one, alongside representative human labels across `Act`, `Review` and `Escalate`, including sampled accepted actions. Overrides alone miss confidently wrong automated decisions.
 
 ## 8. Per-use-case recommendations
 
 ### Use 1: Intent / "switch" router across UAR agents (not safety-critical)
 
-- **Primary:** Laya (Rust/candle, on-device) or Julia 1 (ONNX, phone/tablet) for zero-shot routing with ≤20 agents per level. Arrange agents as a two-level tree.
+- **Primary:** Laya (Rust/candle, on-device) or Julia 1 (ONNX, phone/tablet) for zero-shot routing with ≤20 agents per level. A two-level tree is a candidate pipeline requiring separate end-to-end evaluation, including misrouting losses and calibration.
 - **Once you have ~50+ labeled messages per agent:** switch to a fine-tuned ModernBERT/mmBERT served via candle.
 - **Alternatives:**
   - GLiClass-modern (multi-label).
@@ -155,7 +159,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
   - A hit always escalates, sends crisis resources (988 in the US) and alerts the counselor.
 - **Layer 1, crisis classifier:**
   - A fine-tuned small model (~1.5B Qwen) on the message plus recent context.
-  - Qwen3Guard-Stream's self-harm category as a second, uncorrelated signal.
+  - Qwen3Guard-Stream's self-harm category as a second signal; error independence is unproven and must not be assumed.
   - Conformal thresholds targeting ≥0.98 recall on "risk present".
 - **Layer 2, answer sufficiency:**
   - Granite Guardian 4.1 8B (no-think, bring-your-own criteria): grounded in the counselor's knowledge base, consistent with prior guidance, contains no new clinical directive, answers the question.
@@ -185,7 +189,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
   1. Carrier and policy selection with deterministic rules and a Kev Choice fallback.
   2. Criteria decomposition (Qwen3.8-27B + JSON schema), which a person verifies for each policy version.
   3. Evidence retrieval for each criterion.
-  4. A Noul for each criterion (MedGemma 27B text or Kev-27B), with citations.
+  4. A Kev/LitJev Noul for each criterion, with citations and a human-confirmed native outcome. MedGemma may extract supporting facts for human review only; it never scores or decides the criterion (PLAYBOOK I-8).
   5. Aggregation in code.
 - **Output:** "meets / missing evidence / needs review", never "deny".
 - **Approval prediction** needs historical payer outcomes.
@@ -202,7 +206,7 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
 ### Use 7: Verification / guardrails and ideation pipelines
 
 - **Verifier:** Granite Guardian 4.1 8B.
-- **Candidate ranking:** CLM-8B, which was built as a "verifier that picks the best one" (31/38 on DeepSWE held-out). Pair it with a generator.
+- **Candidate ranking research (deferred):** CLM-8B was built as a verifier that picks candidates. It is outside the implementation plan and baseline bundle.
 
 ## 9. Comparison vs. Jev
 
@@ -212,22 +216,22 @@ Only (d) and (e) give guarantees you can defend for the counseling and prior-aut
 | Cost | $0.042 per 1M input tokens (possibly subsidized) | Hardware only; near-zero marginal cost on device |
 | Calibration | RLCD, "epistemically honest" (vendor claim, unverified) | Must be fitted: temperature scaling + conformal on your data; Kev-9B/27B come closest |
 | Accuracy | Leads on knowledge, policy and many-label tasks (MMLU 0.90 vs. Kev-9B 0.74) | Matches on few-option tasks; weaker on many-label and date/policy reasoning |
-| Privacy / HIPAA | PHI leaves your perimeter; no on-prem or BAA information found | Data stays on device or your infrastructure |
+| Privacy / HIPAA | Third-party disclosure requires approved permissions and applicable safeguards; no BAA established here | Local inference can reduce disclosure, but telemetry, storage, sync and operations require separate controls; self-hosting alone does not establish compliance |
 | Control | Same weights for every account, no fine-tuning | Full fine-tuning on counselor labels, with versioned models |
 
 ## 10. Recommended reference architecture
 
-1. **Ingress (on device, Rust):** deterministic tripwires (crisis lexicon, PHI redaction), then a Laya/ModernBERT router via candle that returns calibrated probabilities.
-2. **Decision service (candle-vllm fork):** a LitJev port on Qwen3.8-27B (or Kev-9B on smaller boxes) exposing `/v1/systemone`, with prefix state sharing and llguidance for generated fields.
-3. **Guard tier:** Qwen3Guard-Stream-0.6B on generated output tokens, and Granite Guardian 4.1 8B as the sufficiency and groundedness judge.
+1. **Ingress (on device, Rust):** deterministic tripwires first, then trusted tenant policy and provenance establish eligible destinations. A local sensitivity model may veto destinations, never authorize egress; unknown or internal data is not automatically approved for hosted use. The baseline resolves to `julia-onnx`; learned routing across optional backends is a later profile and ranks only eligible backends. The same permissions apply to fallback and shadow traffic.
+2. **Decision service:** embedded Julia 1 through Rust/native ONNX Runtime is the baseline; optional hosted Jev requires a TypeSafe key, explicit selection or authorized routing policy, and a trusted destination grant. The extended clinic profile proposes a LitJev port on Qwen3.8-27B (or Kev-9B on smaller boxes); exact runtime support and DeltaNet state-fork correctness remain Spike C prerequisites. Plain `/v1/systemone` compatibility is restricted to approved nonclinical advisory uses; refuse requests whose mandatory outcomes cannot be safely represented. Clinical callers use the native outcome contract.
+3. **Guard tier:** candidate Qwen3Guard-Stream-0.6B on generated output tokens, and Granite Guardian 4.1 8B as sufficiency and groundedness judge. Every required guard must complete before answer release, including after a confident early backend exit; a veto cannot be replaced by a backend answer.
 4. **Calibration service:** stores temperature and conformal thresholds for each decision type, versioned, with separate calibration sets per counselor or clinic. Decisions come back as {act, review, escalate}.
-5. **Audit tier (async):** gpt-oss-safeguard-20b policy review plus a transaction log. Counselor overrides are fed back as training labels.
+5. **Audit and evaluation:** the trusted host commits the redacted audit record before releasing `Act`, under the playbook’s failure contract; the kernel performs no I/O. Optional asynchronous gpt-oss-safeguard-20b review supplements this commit and cannot replace required guards. Use representative human labels across all outcomes, not just overrides. Browser `DeviceOnly` keeps audit and labels local by default; synchronization is a separately authorized export.
 6. **Clinical tier (on-prem GPU only):** MedGemma 27B text for prior-auth evidence extraction, with a person signing off on every output.
 
 ## 11. Practical next steps
 
-1. Stand up Kev-4B and Laya-rust locally. Replay Jev traffic or TypeSafe's public evals to measure agreement and latency.
-2. Build a labeled set of 500–2,000 Counsel Me examples (sufficient / escalate / crisis) with the counselor, oversampling crisis examples using synthetic data the clinician reviews.
+1. Complete M0 Spike F for bundled Julia ONNX on native desktop and mobile, then M1a Julia + explicitly permitted Jev. Measure encoding/primitive parity, installed size, memory and cold/warm latency; prove fresh-install offline use and conservative outcomes before promoting the baseline. Kev and Laya remain optional follow-up profiles.
+2. Build clinician-labeled development and independent evaluation/calibration sets for sufficient / escalate / crisis decisions, sized by per-class requirements and the intended population. Synthetic crisis examples can support training and regression, but never count as real held-out calibration positives, even when clinician-reviewed.
 3. Fit conformal thresholds for escalation and crisis recall, and report the resulting automation rate.
 4. Prototype the LitJev port with a Gated DeltaNet state fork in candle. Validate it against Kev-27B on Kev's frozen suites.
 5. Get legal review on Illinois HB 1806 and other state AI-therapy laws, HIPAA BAAs for any GPU host, and FDA CDS positioning for prior auth. Keep MedGemma use human-in-the-loop.

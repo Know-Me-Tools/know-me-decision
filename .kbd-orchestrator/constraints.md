@@ -1,6 +1,6 @@
 # KBD Constraints — know-me-decision
 
-Derived from `docs/PLAYBOOK.md` §2 (invariants I-1…I-10) and §4 (toolchain), and from
+Derived from `docs/PLAYBOOK.md` §2 (invariants I-1…I-13) and §4 (toolchain), and from
 `CLAUDE.md`. No `AGENTS.md` exists yet (it is created at M0). The playbook is the source
 of truth. Weakening any invariant below requires an ADR in `docs/adr/` plus sign-off
 from every affected host's product owner.
@@ -97,6 +97,21 @@ constraints:
     description: 'I-9: decision MCP tools read-only; only calibrate_fit mutates and it is admin-gated'
     command: 'cargo xtask conformance'
 
+  - id: invariant-hosted-never-phi
+    severity: blocking
+    description: 'I-11: jev and qwen-remote are reachable only under a Hosted locality ceiling with a trusted host grant for approved non-sensitive data; tags, tripwires and the sensitivity model may only remove destinations; unknown data stays on device'
+    note: 'Enforced by the decide-proxy ceiling check before dispatch, property tests, and an egress allowlist holding only enabled hosted endpoints (from M1a)'
+
+  - id: invariant-routing-only-narrows
+    severity: blocking
+    description: 'I-12: no router output, model error or backend failure widens the locality ceiling; failures fall back to a local tier or Review'
+    note: 'Enforced by the decide-proxy state machine and fault-injection tests (from M1a)'
+
+  - id: invariant-jev-wire-fidelity
+    severity: blocking
+    description: 'I-13: advisory /v1/systemone responses validate against the TypeSafe schema snapshot; requests needing enforced Review/Escalate are refused without an ordinary answer; KnowMe fields only under requested x_knowme'
+    note: 'Enforced by snapshot and contract tests against recorded Jev responses (from M1a)'
+
   - id: no-real-labels-in-repo
     severity: blocking
     description: 'calibration/ holds schemas and fixtures only; never real labels, PHI, or session state text'
@@ -163,7 +178,7 @@ constraints:
   tool configuration (OpenSpec skills and commands). They are not disposable tool state.
 - `evals/reports/` is generated and gitignored, except the summaries.
 - `dist/` is release output.
-- `docs/sessions/` is tracked but private (see the `sessions-privacy` warning above).
+- `docs/sessions/` is private and gitignored (public repo): never committed, never synced to the docs site (see the `sessions-privacy` warning above).
 
 ---
 

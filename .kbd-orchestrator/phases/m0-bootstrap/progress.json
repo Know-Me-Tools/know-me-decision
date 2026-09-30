@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "2",
+  "generatedBy": "kbd-runtime",
+  "projectionContractVersion": 2,
+  "sourceRevision": 91,
+  "derivedRevision": 91,
+  "frontier": {
+    "06580634-886f-4c83-8992-e14ba116c89a": 91
+  },
+  "conflictCount": 0,
+  "phase": "m0-bootstrap",
+  "phaseId": "m0-bootstrap",
+  "parentPhase": null,
+  "last_updated": "2026-09-30T06:26:19.565535Z",
+  "last_updated_by": "kbd-runtime",
+  "changes_total": 9,
+  "changes_completed": 0,
+  "implementation_total": 9,
+  "implementation_completed": 0,
+  "completion": {
+    "primaryCounter": "implementation",
+    "implementation": {
+      "completed": 0,
+      "total": 9,
+      "status": "PENDING"
+    },
+    "evidence": {
+      "status": "NOT_TRACKED",
+      "summary": null,
+      "blockers": []
+    },
+    "certification": {
+      "status": "NOT_TRACKED",
+      "summary": null,
+      "blockers": []
+    },
+    "publication": {
+      "status": "NOT_TRACKED",
+      "summary": null,
+      "blockers": []
+    }
+  },
+  "completionScopes": {
+    "completion": "phase",
+    "runCompletion": "run"
+  },
+  "runCompletion": {
+    "scope": "run",
+    "runId": "m0-bootstrap-20260930T053011Z",
+    "primaryCounter": "implementation",
+    "implementation": {
+      "completed": 0,
+      "total": 9,
+      "status": "PENDING"
+    },
+    "evidence": {
+      "status": "PENDING",
+      "summary": null,
+      "blockers": []
+    },
+    "certification": {
+      "status": "PENDING",
+      "summary": null,
+      "blockers": []
+    },
+    "publication": {
+      "status": "PENDING",
+      "summary": null,
+      "blockers": []
+    }
+  },
+  "changes": [
+    {
+      "id": "m0-reconcile-pending-design",
+      "title": "Review, reconcile and commit the uncommitted 2026-09-28 design work before anything builds on it.",
+      "status": "IN_PROGRESS",
+      "implementation_status": "IN_PROGRESS",
+      "tasks_total": 10,
+      "tasks_done": 4,
+      "last_task_completed": "1.4 Operator reviews PLAYBOOK §5a, M1a and Spikes D/E/F; record accept/revise as D-005",
+      "next_task_pending": "Add .opencode/opencode-loop/ and .playwright-mcp/ as private paths via the knowme-project-setup gitignore script",
+      "blockers": []
+    },
+    {
+      "id": "m0-adrs-001-003",
+      "title": "Write and accept ADR-000 (template), ADR-001 (repo and crate boundaries), ADR-002 (pins) and ADR-003 (outcome semantics ",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 6,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Create docs/adr/ with ADR-000 template",
+      "blockers": []
+    },
+    {
+      "id": "m0-workspace-skeleton-ci",
+      "title": "Cargo workspace skeleton per ADR-001, with toolchain, cargo-deny and CI green on an empty workspace.",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 8,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "rustup target add wasm32-unknown-unknown; cargo install cargo-deny",
+      "blockers": []
+    },
+    {
+      "id": "m0-spike-f-julia-onnx",
+      "title": "Built-in Julia 1 baseline through a Rust wrapper and native ONNX Runtime.",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 7,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Verify Julia 1 ONNX, tokenizer and license identities and hashes",
+      "blockers": []
+    },
+    {
+      "id": "m0-spike-c-deltanet-fork",
+      "title": "Can the candle-vllm fork snapshot and fork Qwen3.8 Gated DeltaNet state per request?",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 5,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Create a spike branch in the GQAdonis/candle-vllm fork",
+      "blockers": []
+    },
+    {
+      "id": "m0-spike-ad-local-hosting",
+      "title": "Spikes A and D on Apple Silicon — Kev-4B, laya-rust and laya-mlx latency and memory (D-002).",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 5,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Set up Kev-4B (Python server), laya-rust (candle Metal) and laya-mlx (three checkpoints)",
+      "blockers": []
+    },
+    {
+      "id": "m0-spike-e-hosted-scoring",
+      "title": "Verify permitted service use and score capabilities on authorized hosted endpoints (TypeSafe Jev key available, D-003; r",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 6,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Record TypeSafe terms and permitted non-sensitive use",
+      "blockers": []
+    },
+    {
+      "id": "m0-spike-b-eval-replay",
+      "title": "Replay TypeSafe public evals and Kev frozen suites through the local backends and Jev; record accuracy, Brier and ECE.",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 4,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Fetch TypeSafe public evals and Kev frozen suites; record sources and licenses",
+      "blockers": []
+    },
+    {
+      "id": "m0-adrs-004-012",
+      "title": "ADR-004 (LLM backend: LitJev on the fork vs Kev subprocess) and ADR-012 (embedded native ONNX Runtime for the built-in d",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
+      "tasks_total": 5,
+      "tasks_done": 0,
+      "last_task_completed": null,
+      "next_task_pending": "Write ADR-004 (LitJev on the fork vs Kev subprocess) from Spikes C, A/D and B",
+      "blockers": []
+    }
+  ],
+  "children": {},
+  "migrationStatus": null
+}

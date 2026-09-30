@@ -227,38 +227,38 @@ Guidance for all agents (Claude Code, Codex, OpenCode, Kimi Code, MiniMax Code, 
 
 ## What this is
 
-KnowMe's self-hosted decision layer: a Rust crate family plus the `knowme-decide` binary (an MCP stdio server, an HTTP sidecar with a `READY:{port}` handshake, and a CLI). It replaces hosted System One APIs (TypeSafe's Jev) with open-weight models running on the device or on clinic hardware. It answers **Choice** (≤255 options), **Score** (ordinal) and **Noul** (probability) questions and returns an `Outcome`: `Act`, `Review { set }` or `Escalate`. Hosts: The Boss, Universal Agent Runtime, KnowMe desktop and mobile, the Prior Authorization Workbench, and any MCP client. First products: CounselMe (CM-01…12) and prior-auth (PA-01…11).
+KnowMe's self-hosted decision layer: a Rust crate family plus the `knowme-decide` binary (an MCP stdio server, an HTTP sidecar with a `READY:{port}` handshake, and a CLI). Its shared policy routes among local open-weight models, clinic deployments and authorized hosted providers through native, Jev-compatible and MCP surfaces. It answers **Choice** (≤255 options), **Score** (including fractional expected values) and **Noul** (independent statement probabilities) questions with primitive-specific uncertainty and an `Outcome`: `Act`, `Review` or `Escalate`. Hosts: The Boss, Universal Agent Runtime, KnowMe desktop and mobile, the Prior Authorization Workbench, and any MCP client. First products: CounselMe (CM-01…12) and prior-auth (PA-01…11).
 
-## Cascade (`decide-policy::Decider::decide`)
+## Built-in baseline (planned)
 
-1. Tripwires (signed rule packs).
-2. Locality guard.
-3. Encoder → LLM head → guard. A layer exits early when its calibrated set is a single option ≥ τ.
-4. Calibration: temperature scaling plus Mondrian split conformal.
-5. Outcome mapping, checked in order:
-   1. Tripwire hit → `Escalate`.
-   2. No valid calibration → `Review`.
-   3. The set contains an `escalate`-tagged option → `Escalate`.
-   4. Set size 1 and not `clinical` → `Act`.
-   5. Otherwise → `Review`.
-6. Hash-chained audit append.
+Julia 1 through Rust APIs and embedded native ONNX Runtime (`julia-onnx`) is the selected desktop/mobile default, pending M0 Spike F and M4 native acceptance. Bundle verified weights, tokenizer, runtime and defaults before first launch; no model server, API key, configuration file or first-run download. ONNX Runtime is a C/C++ dependency; only the core is pure Rust. Julia supports 2–20 candidates, not the framework-wide 255. Preserve Score/Noul semantics, required guards, calibration and audit gates; zero setup never implies automatic `Act`. Optional Jev requires a TypeSafe key plus explicit selection/authorized routing and a trusted destination grant; key presence leaves the local default unchanged. `DeviceOnly`, PHI and unknown data never reach hosted providers. `decide-lite` remains remote-free; mobile network adapters belong to a separate trusted host profile. CLM and its Rust port are deferred.
 
-The normative types are in PLAYBOOK §5. Use those field names; they are the wire names.
+## Decision and host contract
 
-## Invariants (PLAYBOOK §2; weakening one needs an ADR and sign-off from every affected host)
+The normative proposed types and exact precedence are in PLAYBOOK §5. Keep the pure policy separate from trusted host I/O; HTTP, MCP, embedded and browser callers share the same enforcement.
+
+1. Signed tripwires run first; escalation cannot be downgraded.
+2. Authenticated host policy, trusted data provenance and the spec establish permitted destinations. Unknown data stays local. Sensitivity models only veto or narrow; neither a public/internal classification nor a credential grants egress.
+3. An eligible encoder or LLM proposes primitive-specific answers. Early exit may skip optional inference but never a required guard. A guard veto survives later calibration.
+4. Apply valid calibration for the complete scoring pipeline and relevant routing policy. Incomplete candidate scores cannot authorize `Act`; never invent missing probability mass.
+5. Map each question to its outcome using PLAYBOOK §5. Choice, expected Score and independent Noul answers are distinct from permission to act. Clinical state changes remain human-confirmed host commands.
+6. The pure policy supplies the proposal and audit record. The trusted host persists the audit before releasing `Act`. Audit failure withholds `Act`, has explicit status and no fabricated audit ID; urgent `Escalate` remains deliverable with the failure visible.
+
+## Invariants (PLAYBOOK §2; weakening one needs an ADR and affected-host sign-off)
 
 - **I-1** Tripwires run first. No backend output can flip an `Escalate`.
-- **I-2** No signed, in-date calibration artifact → never `Act`.
+- **I-2** No signed, in-date, pipeline-matching calibration artifact → never `Act`.
 - **I-3** Recall floors are inputs and automation rate is an output. The calibration API has no automation target.
-- **I-4** A floor of 1−α needs at least ⌈1/α⌉−1 positives, or the class forces `Review`.
-- **I-5** `DeviceOnly` never reaches a remote backend. `remote` is compiled out of `decide-lite`.
+- **I-4** The finite-sample minimum uses real calibration positives only. It is necessary for the chosen quantile, not proof of population recall or automated-action risk. Synthetic data never counts toward `n_pos`.
+- **I-5** `DeviceOnly` forbids off-device inference and synchronization. Other destinations require trusted grants; remote inference is compiled out of `decide-lite`.
 - **I-6** `clinical` specs only propose; they never write clinical state.
-- **I-7** Every decision is audited, including tripwire exits and errors.
+- **I-7** The host attempts audit persistence for every decision and error; failure is explicit and prevents `Act`.
 - **I-8** MedGemma may only be registered as `role = "extractor"`.
-- **I-9** MCP decision tools are read-only. Only `calibrate_fit` mutates, and it is admin-gated.
+- **I-9** Decision MCP tools do not write business state. `calibrate_fit` is the only model-visible mutating tool and is admin-gated. Mandatory audit writes and authenticated `record_override` commands belong to the trusted host; the latter is not a model-visible decision tool.
 - **I-10** `decide-core` does no I/O and builds on `wasm32-unknown-unknown`.
+- **I-11–I-13** Follow PLAYBOOK §2 for hosted-data exclusion, routing that only narrows, and bounded Jev wire compatibility. Plain Jev clients do not acquire native action authority.
 
-Hosts act on `outcome`, never on `value`. A backend outage degrades to `Review` and never fails open. Never log state text; log redacted hashes. `calibration/` holds schemas and fixtures only, never real labels.
+Hosts automate only on audited native `Act`, never an answer value alone; urgent `Escalate` remains deliverable with explicit audit-failure status. Representative human samples across `Act`, `Review` and `Escalate`, plus overrides, feed calibration; overrides are not the sole source. Backend failures never widen permissions or fail open. Never log state text; log redacted hashes. `calibration/` holds schemas and fixtures only, never real labels. Token Plan probes do not establish production entitlement; a remote adapter requires a permitted service or explicit provider authorization and verified scoring capabilities.
 
 ## Commands (valid from M0)
 

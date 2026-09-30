@@ -1,8 +1,39 @@
 {
-  "phase": "spec",
+  "schemaVersion": "5",
+  "generatedBy": "kbd-runtime",
+  "projectionContractVersion": 2,
+  "sourceRevision": 91,
+  "derivedRevision": 91,
+  "frontier": {
+    "06580634-886f-4c83-8992-e14ba116c89a": 91
+  },
+  "conflictCount": 0,
+  "projectId": "b2e307a2-c44b-41b3-b951-f2082da8b121",
+  "runId": "m0-bootstrap-20260930T053011Z",
+  "path": [
+    "m0-bootstrap"
+  ],
+  "phaseIds": [
+    "m0-bootstrap"
+  ],
+  "activePhaseId": "m0-bootstrap",
+  "activePhase": "m0-bootstrap",
+  "phase": "m0-bootstrap",
+  "parentPhase": null,
+  "childPointer": null,
+  "change": "m0-reconcile-pending-design",
+  "currentTask": "5",
   "status": "ready",
-  "task": null,
-  "waypoint": "bootstrap",
-  "updated": "2026-09-28",
-  "note": "Authoritative for position. tier-guard.sh reads .status; final artifact commands require a completed or release boundary."
+  "lifecycle": "ready",
+  "stageId": "execute",
+  "stageStatus": "IN_PROGRESS",
+  "completionMetric": "implementation",
+  "implementationCompleted": 0,
+  "implementationTotal": 9,
+  "planRevision": 1,
+  "revision": 91,
+  "exactNextCommand": "/kbd-assess m0-bootstrap",
+  "nextChange": "m0-reconcile-pending-design",
+  "nextTask": "5",
+  "updatedAt": "2026-09-30T06:26:19.565535Z"
 }

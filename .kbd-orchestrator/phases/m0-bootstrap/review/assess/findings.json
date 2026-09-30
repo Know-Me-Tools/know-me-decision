@@ -1,0 +1,43 @@
+{
+  "mode": "artifact",
+  "verdict": "PASS",
+  "judge_model": "gpt-5.5",
+  "producer_model": "claude-opus-5-5",
+  "isolation_mode": "rest-gateway:http://localhost:4000/v1",
+  "cross_model_check": "verified-distinct",
+  "findings": [
+    {
+      "severity": "WARNING",
+      "file": "assessment.md",
+      "claim": "The assessment claims a GitHub Actions workflow state that is contradicted by the packet file tree.",
+      "evidence": "assessment.md says: \"CI (fmt, clippy, test, deny, core-wasm): MISSING \u2014 .github/workflows/ holds only docs.yml (Pages).\" The provided file_tree contains no `.github/` or `.github/workflows/` entry at all.",
+      "suggested_fix": "Change the finding to state that `.github/workflows/` is absent, or provide evidence that the tree omitted `.github/workflows/docs.yml`."
+    },
+    {
+      "severity": "WARNING",
+      "file": "assessment.md",
+      "claim": "The assessment incorrectly describes `docs/sessions/` as ignored, conflicting with the project constraints.",
+      "evidence": "assessment.md says: \"Privacy: docs/sessions/ correctly ignored\". The constraints say: \"docs/sessions/ is tracked but private\" and the file_tree includes `./docs/sessions`.",
+      "suggested_fix": "Replace the statement with the constraint-accurate finding: `docs/sessions/ is tracked but private; do not quote in public artifacts or externally share without review`."
+    },
+    {
+      "severity": "WARNING",
+      "file": "assessment.md",
+      "claim": "The assessment asserts detailed uncommitted Git/session state without support in the packet.",
+      "evidence": "assessment.md says: \"Cross-tool progress: 1 unrecorded session ... changed 14 tracked files and added 2 OpenSpec proposals; none of it is committed and none of it is in progress.json.\" The packet provides only a file_tree and no Git status, commit state, `progress.json`, or contents of `.opencode/opencode-loop/ses_*.json` / `.prometheus/session-log.md` to substantiate the claim.",
+      "suggested_fix": "Either include the Git/session evidence in the review packet or downgrade this to an explicit unverified risk requiring confirmation before planning depends on it."
+    },
+    {
+      "severity": "WARNING",
+      "file": "assessment.md",
+      "claim": "The assessment reports local toolchain and installed cargo tool state that is unsupported by the packet.",
+      "evidence": "assessment.md says: \"rustup 1.97.1 installed with aarch64-apple-darwin...\" and \"cargo-fuzz and cargo-audit present; cargo-deny MISSING; cargo-insta MISSING.\" The packet contains no command output or tool inventory; the file_tree alone cannot establish installed rustup targets or cargo subcommands.",
+      "suggested_fix": "Attach the command outputs used for this assessment, or mark toolchain readiness as unknown pending verification."
+    }
+  ],
+  "sycophancy_screen": {
+    "reject_cap": 2,
+    "cap_overridden": false,
+    "cap_default": 2
+  }
+}

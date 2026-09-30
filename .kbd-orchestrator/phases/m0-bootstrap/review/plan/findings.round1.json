@@ -1,0 +1,47 @@
+{
+  "mode": "artifact",
+  "verdict": "BLOCK",
+  "judge_model": "gpt-5.5",
+  "producer_model": "claude-opus-5-5",
+  "isolation_mode": "rest-gateway:http://localhost:4000/v1",
+  "cross_model_check": "verified-distinct",
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The plan allows M0 exit with unresolved blocking constraints, contradicting the project-level archiving rules.",
+      "evidence": "Constraints state: \"Blocking Constraints (prevent archiving until resolved)\". Plan change 9 acceptance says: \"exit-gate checklist in the reviewer's findings, all PASS or explicitly BLOCKED with operator acknowledgement.\"",
+      "suggested_fix": "Change the M0 exit acceptance so every blocking constraint must PASS; only non-blocking spike measurements or environmental targets may be marked BLOCKED with operator acknowledgement."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The workspace skeleton intentionally leaves blocking xtask commands failing, and no later change implements them.",
+      "evidence": "Constraints define blocking commands `cargo xtask spec-lint` for `invariant-clinical-proposes` and `cargo xtask conformance` for `invariant-readonly-mcp`. Plan change 3 says xtask has \"`spec-lint`, `conformance` subcommands that exit \\\"not implemented\\\" non-zero only when invoked\"; no later change replaces those stubs with passing implementations.",
+      "suggested_fix": "Either implement minimal passing `spec-lint` and `conformance` behavior in M0 for the empty workspace, or add a later required change before exit that makes both blocking commands pass."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The first change has an impossible acceptance criterion because it requires running a missing `verify.mjs` that the plan never creates.",
+      "evidence": "Packet `cited_paths` says `MISSING  verify.mjs`. Plan change 1 acceptance requires: \"`verify.mjs` 0 FAIL\". No change in the plan creates `verify.mjs`.",
+      "suggested_fix": "Add creation/restoration of `verify.mjs` before it is used, or replace the acceptance criterion with commands that exist in the repo."
+    },
+    {
+      "severity": "WARNING",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The plan depends on and writes to `decision-log.md`, but the file is not present in the provided file tree and no change creates it.",
+      "evidence": "Plan inputs cite \"decision-log.md D-001..D-004\" and change 1 acceptance requires \"the operator decision is recorded in decision-log.md\". The provided file tree lists no `decision-log.md` path.",
+      "suggested_fix": "Specify the correct existing path for the decision log, or add creation of `decision-log.md` as part of `m0-reconcile-pending-design` before it is used as acceptance evidence."
+    }
+  ],
+  "sycophancy_screen": {
+    "reject_cap": 2,
+    "cap_overridden": false,
+    "cap_default": 2
+  }
+}

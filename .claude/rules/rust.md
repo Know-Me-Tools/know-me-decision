@@ -57,7 +57,7 @@ add one to silence a borrow or trait error.
 
 ## know-me-decision specifics (PLAYBOOK §4, §10)
 
-- Rust **1.97.1**, edition 2024. Exact pins (`=x.y.z`) in `[workspace.dependencies]`: rmcp `=3.4.x`, candle `0.11`, candle-vllm (GQAdonis fork) by git rev. `decide-mcp` must not leak rmcp types in its public API.
+- Rust **1.97.1**, edition 2024. Exact pins (`=x.y.z`) in `[workspace.dependencies]`, authoritative in `versions.toml` (hand-edited; see ADR-002): rmcp `=3.5.0` (MCP 2026-07-28 + 2025-11-25), axum `=0.8.9`, candle-core `=0.11.0`, llguidance `=1.8.0`, mlx-rs `=0.32.0` (optional Laya-MLX only), candle-vllm (GQAdonis fork) by git rev. `ort` / native ONNX Runtime pins wait for ADR-012. `decide-mcp` must not leak rmcp types in its public API.
 - Feature profiles are additive. `decide-lite` covers core, schema, tripwire, calibrate, policy, audit and `encoder-onnx`. `decide-desktop` adds `encoder-candle`, `llm-local`, `guard` and `mcp`. `decide-server` adds `llm-remote` (non-PHI only) and `mcp-http`.
 - `#![forbid(unsafe_code)]` in core, schema, tripwire, calibrate, policy and audit. `unsafe` is allowed only in backend crates, with a `// SAFETY:` comment. Clippy `pedantic` with a curated allow-list.
 - `thiserror` in libraries and `anyhow` only in `bins/`. No `unwrap`/`expect` outside tests.

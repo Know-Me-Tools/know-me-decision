@@ -1,0 +1,31 @@
+{
+  "mode": "artifact",
+  "verdict": "BLOCK",
+  "judge_model": "gpt-5.5",
+  "producer_model": "claude-opus-5-5",
+  "isolation_mode": "rest-gateway:http://localhost:4000/v1",
+  "cross_model_check": "verified-distinct",
+  "findings": [
+    {
+      "severity": "CRITICAL",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The plan's M0 exit gate narrows 'every blocking constraint' to a subset, so downstream implementation can archive without proving multiple blocking invariants.",
+      "evidence": "Constraints list blocking items including `no-unwrap-expect-in-libs`, `no-rmcp-types-in-public-api`, `invariant-tripwire-first`, `invariant-no-calibration-no-act`, `invariant-recall-floors-are-inputs`, `invariant-finite-sample`, `invariant-locality`, `invariant-audit-everything`, `invariant-medgemma-extractor-only`, `no-real-labels-in-repo`, `no-state-text-in-logs`, and `never-fail-open`; plan acceptance for change 9 says: \"Every **blocking** constraint ... PASSes ...: build, tests, fmt/clippy/deny, core-wasm, forbid-unsafe, exact pins, spec-lint, conformance, no secrets.\"",
+      "suggested_fix": "Make the M0 exit acceptance require explicit PASS/BLOCK evidence for every blocking constraint ID in `.kbd-orchestrator/constraints.md`, not just the listed command-based subset."
+    },
+    {
+      "severity": "CRITICAL",
+      "file": "plan.md",
+      "line": 0,
+      "claim": "The workspace skeleton change only requires `#![forbid(unsafe_code)]` for decide-core, omitting the other safe crates required by a blocking constraint.",
+      "evidence": "Constraint `forbid-unsafe-in-safe-crates` requires `#![forbid(unsafe_code)] in decide-core, -schema, -tripwire, -calibrate, -policy, -audit`; plan change 3 says: \"Empty crates for the ten decide-* crates: decide-core with `#![forbid(unsafe_code)]`, no I/O, builds for wasm32.\"",
+      "suggested_fix": "Change m0-workspace-skeleton-ci details and acceptance to require `#![forbid(unsafe_code)]` in decide-core, decide-schema, decide-tripwire, decide-calibrate, decide-policy, and decide-audit."
+    }
+  ],
+  "sycophancy_screen": {
+    "reject_cap": 2,
+    "cap_overridden": false,
+    "cap_default": 2
+  }
+}
