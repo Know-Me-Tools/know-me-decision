@@ -2,10 +2,10 @@
   "schemaVersion": "5",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 91,
-  "derivedRevision": 91,
+  "sourceRevision": 94,
+  "derivedRevision": 94,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 91
+    "06580634-886f-4c83-8992-e14ba116c89a": 94
   },
   "conflictCount": 0,
   "projectId": "b2e307a2-c44b-41b3-b951-f2082da8b121",
@@ -22,7 +22,7 @@
   "parentPhase": null,
   "childPointer": null,
   "change": "m0-reconcile-pending-design",
-  "currentTask": "5",
+  "currentTask": "m0-reconcile-pending-design-t1",
   "status": "ready",
   "lifecycle": "ready",
   "stageId": "execute",
@@ -31,9 +31,9 @@
   "implementationCompleted": 0,
   "implementationTotal": 9,
   "planRevision": 1,
-  "revision": 91,
+  "revision": 94,
   "exactNextCommand": "/kbd-assess m0-bootstrap",
   "nextChange": "m0-reconcile-pending-design",
-  "nextTask": "5",
-  "updatedAt": "2026-09-30T06:26:19.565535Z"
+  "nextTask": "m0-reconcile-pending-design-t1",
+  "updatedAt": "2026-09-30T06:26:45.313990Z"
 }

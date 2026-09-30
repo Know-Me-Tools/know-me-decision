@@ -2,18 +2,18 @@
   "schemaVersion": "1",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 91,
-  "derivedRevision": 91,
+  "sourceRevision": 94,
+  "derivedRevision": 94,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 91
+    "06580634-886f-4c83-8992-e14ba116c89a": 94
   },
   "conflictCount": 0,
-  "updatedAt": "2026-09-30T06:26:19.565535Z",
+  "updatedAt": "2026-09-30T06:26:45.313990Z",
   "cursor": [
     "m0-bootstrap",
     "execute",
     "m0-reconcile-pending-design",
-    "5"
+    "m0-reconcile-pending-design-t1"
   ],
   "root": {
     "type": "phase",
@@ -37,9 +37,9 @@
           {
             "type": "change",
             "id": "m0-reconcile-pending-design",
-            "status": "IN_PROGRESS",
+            "status": "PENDING",
             "progress": {
-              "done": 4,
+              "done": 5,
               "total": 10
             }
           },

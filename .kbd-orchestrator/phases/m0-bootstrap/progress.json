@@ -2,16 +2,16 @@
   "schemaVersion": "2",
   "generatedBy": "kbd-runtime",
   "projectionContractVersion": 2,
-  "sourceRevision": 91,
-  "derivedRevision": 91,
+  "sourceRevision": 94,
+  "derivedRevision": 94,
   "frontier": {
-    "06580634-886f-4c83-8992-e14ba116c89a": 91
+    "06580634-886f-4c83-8992-e14ba116c89a": 94
   },
   "conflictCount": 0,
   "phase": "m0-bootstrap",
   "phaseId": "m0-bootstrap",
   "parentPhase": null,
-  "last_updated": "2026-09-30T06:26:19.565535Z",
+  "last_updated": "2026-09-30T06:26:45.313990Z",
   "last_updated_by": "kbd-runtime",
   "changes_total": 9,
   "changes_completed": 0,
@@ -73,11 +73,11 @@
     {
       "id": "m0-reconcile-pending-design",
       "title": "Review, reconcile and commit the uncommitted 2026-09-28 design work before anything builds on it.",
-      "status": "IN_PROGRESS",
-      "implementation_status": "IN_PROGRESS",
+      "status": "PENDING",
+      "implementation_status": "PENDING",
       "tasks_total": 10,
-      "tasks_done": 4,
-      "last_task_completed": "1.4 Operator reviews PLAYBOOK §5a, M1a and Spikes D/E/F; record accept/revise as D-005",
+      "tasks_done": 5,
+      "last_task_completed": "1.5 Run verify.mjs (full and --privacy), then commit docs and KBD phase state",
       "next_task_pending": "Add .opencode/opencode-loop/ and .playwright-mcp/ as private paths via the knowme-project-setup gitignore script",
       "blockers": []
     },
